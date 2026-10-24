@@ -117,6 +117,17 @@
   .buygroup li { list-style: none; margin-left: -20px; }
   .buygroup .for { color: #6a7263; font-size: 13px; }
   .err { color: #b03a2e; font-size: 14px; display: none; margin: 8px 0; }
+
+  .everyday h3 { font-family: Georgia, serif; font-size: 19px; margin: 16px 0 4px; }
+  .dayrow { display: flex; gap: 10px; padding: 7px 10px; border-radius: 10px; font-size: 15px; }
+  .dayrow:nth-child(odd) { background: #f7f4ec; }
+  .dayrow.today { background: #eef3e6; border: 1px solid #c8d8b8; }
+  .dayname { min-width: 92px; font-weight: 700; }
+  .dur { color: #6a7263; font-size: 13px; }
+  .rest { color: #8a8f82; }
+  .asneeded { background: #fff8dd; border: 1px solid #e3d49a; border-radius: 16px; padding: 16px 20px; margin: 14px 0; }
+  .asneeded h3 { font-family: Georgia, serif; font-size: 19px; margin-bottom: 6px; }
+  .asneeded ul { padding-left: 20px; font-size: 15px; }
 </style>
 </head>
 <body>
@@ -164,7 +175,7 @@
   </div>
   <div class="panel" id="panel-routine" style="display:none">
     <h2>📅 Your 4-week routine</h2>
-    <p class="sub">One month, four themes — every organ gets its turn without cramming everything into one week. Tick things off as you do them; your ticks are saved on your phone.</p>
+    <p class="sub">Everyday habits first, then one special task on some days. Blank days are rest days — that is on purpose. Durations are rough ranges. Tick things off as you do them; your ticks are saved on your phone.</p>
     <div id="routine-box"></div>
   </div>
   <div class="panel" id="panel-buy" style="display:none">
@@ -511,54 +522,83 @@ function renderQuiz() {
 }
 
 /* ---------- Routine ---------- */
+var EVERYDAY = [
+  { group: "Morning", tasks: [
+    ["Tongue scrape", "1-2 min"],
+    ["Brush teeth (morning and night)", "2-3 min each"],
+    ["Nose oil drops - 2 drops in each nostril", "1-2 min"],
+    ["Wash face with lukewarm water", "2-3 min"],
+    ["Keep ears dry after bathing", "1 min"],
+    ["Ankle rotations", "2-3 min"],
+    ["Neck & back stretches", "5-10 min"]
+  ] },
+  { group: "Through the day", tasks: [
+    ["Warm, freshly cooked food at fixed times; chew slowly", "20-30 min per meal"],
+    ["Fibre-rich food with meals", "with meals"],
+    ["Drink water through the day; sip warm water", "through the day"],
+    ["Do not hold back natural urges", "all day"],
+    ["Eye breaks - look away every 20 min on screen days", "a few seconds every 20 min"],
+    ["Hand & finger stretches a few times", "2-3 min each"],
+    ["Keep shoulders relaxed, avoid hunching", "all day"],
+    ["Walk - 30 min brisk, plus a short stroll after meals", "30-45 min"],
+    ["Sunlight", "15-20 min"]
+  ] },
+  { group: "Evening & night", tasks: [
+    ["Foot oil massage before sleep", "5-10 min"],
+    ["Slow breathing + quiet sitting", "10-20 min"],
+    ["No screens late at night; sleep before 10 pm", "7-8 hrs sleep"]
+  ] }
+];
 var WEEKS = [
-  { title: "Week 1 — Head & senses", focus: "Brain, eyes, ears, nose, mouth, tongue, throat, face, hair & scalp",
-    tasks: [
-      ["Scrape your tongue every morning", ""],
-      ["Oil pulling (swish sesame or coconut oil) a few mornings", ""],
-      ["Eye rest: blink often, palm-cup your eyes when on screens", ""],
-      ["2–3 drops of lukewarm sesame oil in each ear, once this week", ""],
-      ["2 drops of warm oil in each nostril in the morning", ""],
-      ["Salt-water gargle whenever the throat feels scratchy", ""],
-      ["Light face oil massage a few times", ""],
-      ["Warm scalp oil massage (amla or bhringraj oil) once or twice", ""]
-    ] },
-  { title: "Week 2 — Body & movement", focus: "Skin, neck & back, shoulders, arms, hands, nails, legs, knees, ankles, feet, bones, joints, muscles",
-    tasks: [
-      ["Full-body warm oil massage before bath, once or twice", ""],
-      ["Walk 30 minutes every day", ""],
-      ["Neck and back stretches, morning and evening", ""],
-      ["Shoulder rolls and arm circles daily", ""],
-      ["Hand and finger stretches during work breaks", ""],
-      ["Trim nails, oil the cuticles", ""],
-      ["Warm oil massage on knees and feet before sleeping", ""],
-      ["Some sunlight for vitamin D", ""]
-    ] },
-  { title: "Week 3 — Inner organs", focus: "Heart, lungs, liver, stomach, gut, kidneys, bladder, pancreas, gallbladder, spleen, blood, thyroid",
-    tasks: [
-      ["Eat warm, freshly cooked food at fixed times", ""],
-      ["Short walk after meals", ""],
-      ["10 minutes of slow, deep breathing daily", ""],
-      ["Drink water through the day; don't hold urine", ""],
-      ["Bitter greens and turmeric in food a few times", ""],
-      ["Steam if congested; tulsi-ginger tea when needed", ""],
-      ["Keep salt moderate; avoid very fatty, fried meals", ""],
-      ["If a checkup (sugar, BP, thyroid) is due, book it this week", ""]
-    ] },
-  { title: "Week 4 — Whole body & personal", focus: "Immunity, reproductive health, breast, periods, prostate, piles, tonsils",
-    tasks: [
-      ["Sleep before 10 pm all week", ""],
-      ["Amla, turmeric milk or tulsi in your daily food", ""],
-      ["Monthly breast self-check", "f"],
-      ["Period care: rest on heavy days, iron-rich food", "f"],
-      ["Prostate checkup if you are a man over 40 and it is due", "m"],
-      ["Fibre + water every day; don't strain (piles care)", ""],
-      ["One full rest day — no heavy work, early sleep", ""],
-      ["Review the month: what helped? Keep that going", ""]
-    ] }
+  { title: "Week 1 - Head & senses", days: [
+    ["Monday", "Scalp oil massage (amla or bhringraj oil)", "15-30 min"],
+    ["Tuesday", "", ""],
+    ["Wednesday", "Ear oil drops - 2-3 drops lukewarm sesame oil in each ear", "2-3 min"],
+    ["Thursday", "", ""],
+    ["Friday", "Face oil massage", "5-10 min"],
+    ["Saturday", "Oil pulling - swish sesame or coconut oil", "5-10 min"],
+    ["Sunday", "", ""]
+  ] },
+  { title: "Week 2 - Body & movement", days: [
+    ["Monday", "Full-body warm oil massage before bath", "20-30 min"],
+    ["Tuesday", "", ""],
+    ["Wednesday", "", ""],
+    ["Thursday", "Knee oil massage with warm sesame oil", "10-15 min"],
+    ["Friday", "Nails - trim, clean, oil the cuticles", "10-15 min"],
+    ["Saturday", "", ""],
+    ["Sunday", "", ""]
+  ] },
+  { title: "Week 3 - Inner organs", days: [
+    ["Monday", "Digestion foods - ginger, cumin, fennel, buttermilk; no heavy fried food", "with meals"],
+    ["Tuesday", "", ""],
+    ["Wednesday", "Coriander or barley water", "5 min to prepare"],
+    ["Thursday", "Bitter greens + turmeric in meals", "with meals"],
+    ["Friday", "", ""],
+    ["Saturday", "Checkups if due - sugar, BP, thyroid", "30-60 min"],
+    ["Sunday", "Light food day - khichdi, soups", "meals"]
+  ] },
+  { title: "Week 4 - Whole body & personal", days: [
+    ["Monday", "Immunity foods - amla, turmeric milk, tulsi", "with meals"],
+    ["Tuesday", "SELFCHECK", ""],
+    ["Wednesday", "Nourishing foods - milk, nuts, dates", "with meals"],
+    ["Thursday", "", ""],
+    ["Friday", "", ""],
+    ["Saturday", "Gum massage + dental checkup if due", "2-3 min"],
+    ["Sunday", "Month review - what helped? Keep that going", "10-15 min"]
+  ] }
+];
+var AS_NEEDED = [
+  "Salt-water gargle - only when the throat feels scratchy",
+  "Steam - only when congested",
+  "Period care (rest, iron-rich food) - on period days, not a calendar day",
+  "Tonsil care - gargle and rest voice if tonsils feel sore"
 ];
 function loadChecks(key) {
   try { return JSON.parse(localStorage.getItem(key) || "{}"); } catch (e) { return {}; }
+}
+function checkRow(key, label, dur, checked) {
+  return '<div><label><input type="checkbox" data-rkey="' + key + '"' + (checked ? " checked" : "") + "> " + label +
+    (dur ? ' <span class="dur">(' + dur + ')</span>' : "") + "</label></div>";
 }
 function renderRoutine() {
   var box = document.getElementById("routine-box");
@@ -573,21 +613,46 @@ function renderRoutine() {
       (saved.age === "Under 18" ? "<p style='margin-top:8px'>Under 18: follow this with a parent's guidance, and use herbs only if an expert advises.</p>" : "") +
       "</div>";
   } else {
-    banner = '<div class="result"><h3>Common routine for everyone</h3><p>Take the quiz and this page will adjust to your body type — warming tips if you run cold, cooling tips if you run hot, and more movement if you run steady.</p></div>';
+    banner = '<div class="result"><h3>Common routine for everyone</h3><p>Take the quiz and this page will adjust to your body type - warming tips if you run cold, cooling tips if you run hot, and more movement if you run steady.</p></div>';
   }
   var checks = loadChecks("ayurRoutineChecks");
-  var html = banner + "<p>Daily basics, every day: sleep before 10, warm freshly cooked food at fixed times, 30-minute walk, 10 minutes of slow breathing.</p>";
-  WEEKS.forEach(function (w, wi) {
-    html += '<div class="week"><h3>' + w.title + '</h3><p class="focus">Covers: ' + w.focus + '</p><ul>';
-    w.tasks.forEach(function (task, ti) {
-      if (task[1] === "f" && gender === "Male") return;
-      if (task[1] === "m" && gender === "Female") return;
-      var key = "w" + wi + "t" + ti;
-      var done = !!checks[key];
-      html += '<li class="' + (done ? "done" : "") + '"><label><input type="checkbox" data-rkey="' + key + '"' + (done ? " checked" : "") + "> " + task[0] + "</label></li>";
+  var today = new Date();
+  var thisWeek = Math.min(3, Math.floor((today.getDate() - 1) / 7));
+  var todayDay = (today.getDay() + 6) % 7;
+  var html = banner;
+  html += '<div class="week everyday"><h2 style="margin:0 0 4px">For everyday</h2><p class="focus">These happen every day, so they never repeat in the weeks below.</p>';
+  EVERYDAY.forEach(function (g, gi) {
+    html += "<h3>" + g.group + "</h3>";
+    g.tasks.forEach(function (task, ti) {
+      var key = "e" + gi + "-" + ti;
+      html += checkRow(key, task[0], task[1], !!checks[key]);
     });
-    html += "</ul></div>";
   });
+  html += "</div>";
+  WEEKS.forEach(function (w, wi) {
+    html += '<div class="week"><h3>' + w.title + "</h3>";
+    if (wi === thisWeek) html += '<p class="focus">This week (by date: week ' + (wi + 1) + " of the month). Today is highlighted.</p>";
+    w.days.forEach(function (d, di) {
+      var isToday = (wi === thisWeek && di === todayDay);
+      var key = "w" + wi + "d" + di;
+      var task = d[1];
+      var dur = d[2];
+      if (task === "SELFCHECK") {
+        if (gender === "Female") { task = "Breast self-check"; dur = "5-10 min"; }
+        else if (gender === "Male") { task = "Prostate checkup if due"; dur = "30-60 min"; }
+        else { task = "Monthly self-check - breast self-check (women) / prostate checkup if due (men)"; dur = "5-10 min"; }
+      }
+      if (!task) {
+        html += '<div class="dayrow' + (isToday ? " today" : "") + '"><span class="dayname">' + d[0] + '</span><span class="rest">Rest - no special task</span></div>';
+      } else {
+        html += '<div class="dayrow' + (isToday ? " today" : "") + '"><span class="dayname">' + d[0] + "</span>" +
+          checkRow(key, task, dur, !!checks[key]) + "</div>";
+      }
+    });
+    html += "</div>";
+  });
+  html += '<div class="asneeded"><h3>As needed - not scheduled</h3><p style="font-size:14px;color:#5a5228">These only apply when the situation comes up, so they are not given a fake day:</p><ul>' +
+    AS_NEEDED.map(function (x) { return "<li>" + x + "</li>"; }).join("") + "</ul></div>";
   html += '<button type="button" class="btn secondary" id="routine-reset">Reset all ticks</button>';
   box.innerHTML = html;
   box.querySelectorAll("input[data-rkey]").forEach(function (cb) {
@@ -595,7 +660,6 @@ function renderRoutine() {
       var c = loadChecks("ayurRoutineChecks");
       c[cb.getAttribute("data-rkey")] = cb.checked;
       localStorage.setItem("ayurRoutineChecks", JSON.stringify(c));
-      cb.closest("li").classList.toggle("done", cb.checked);
     });
   });
   document.getElementById("routine-reset").addEventListener("click", function () {
