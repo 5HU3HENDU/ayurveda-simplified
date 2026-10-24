@@ -83,6 +83,40 @@
   .back:hover { text-decoration: underline; }
   footer { text-align: center; font-size: 13px; color: #7a7f72; margin-top: 36px; padding: 0 16px; }
   .empty { text-align: center; color: #7a7f72; padding: 20px; display: none; }
+
+  .tabs { display: flex; gap: 8px; flex-wrap: wrap; margin: 20px 0 4px; }
+  .tabbtn {
+    border: 1px solid #d8d2c2; background: #fffdf8; border-radius: 999px;
+    padding: 10px 16px; font-size: 15px; font-family: inherit; cursor: pointer; color: #22271f;
+  }
+  .tabbtn.active { background: #3d5a35; color: #fff; border-color: #3d5a35; }
+  .panel h2 { font-family: Georgia, serif; font-size: 26px; margin: 18px 0 8px; }
+  .panel p.sub { color: #5c6653; font-size: 15px; margin-bottom: 14px; }
+  .quiz-q { background: #fffdf8; border: 1px solid #e2dccb; border-radius: 16px; padding: 16px 18px; margin: 12px 0; }
+  .quiz-q p { font-weight: 700; margin-bottom: 8px; }
+  .quiz-q label { display: block; font-size: 15px; padding: 4px 0; cursor: pointer; }
+  .field { margin: 12px 0; font-size: 15px; }
+  .field select { font-size: 15px; padding: 8px 10px; border-radius: 10px; border: 1px solid #d8d2c2; background: #fffdf8; margin-left: 6px; }
+  .btn {
+    background: #3d5a35; color: #fff; border: none; border-radius: 999px;
+    padding: 12px 24px; font-size: 16px; cursor: pointer; margin: 12px 0;
+  }
+  .btn.secondary { background: #fffdf8; color: #3d5a35; border: 1px solid #3d5a35; }
+  .result {
+    background: #eef3e6; border: 1px solid #c8d8b8; border-radius: 16px; padding: 20px 22px; margin: 14px 0;
+  }
+  .result h3 { font-family: Georgia, serif; font-size: 24px; margin-bottom: 6px; }
+  .result ul, .week ul, .buygroup ul { padding-left: 20px; font-size: 15px; }
+  .week { background: #fffdf8; border: 1px solid #e2dccb; border-radius: 16px; padding: 18px 20px; margin: 14px 0; }
+  .week h3 { font-family: Georgia, serif; font-size: 20px; margin-bottom: 4px; }
+  .week .focus { color: #6a7263; font-size: 13px; margin-bottom: 10px; }
+  .week li, .buygroup li { padding: 3px 0; }
+  .week li.done { color: #8a8f82; text-decoration: line-through; }
+  .buygroup { background: #fffdf8; border: 1px solid #e2dccb; border-radius: 16px; padding: 18px 20px; margin: 14px 0; }
+  .buygroup h3 { font-family: Georgia, serif; font-size: 20px; margin-bottom: 10px; }
+  .buygroup li { list-style: none; margin-left: -20px; }
+  .buygroup .for { color: #6a7263; font-size: 13px; }
+  .err { color: #b03a2e; font-size: 14px; display: none; margin: 8px 0; }
 </style>
 </head>
 <body>
@@ -107,6 +141,13 @@
     </ul>
   </div>
 
+<div class="tabs">
+    <button type="button" class="tabbtn active" data-tab="panel-organs">🌿 Organs</button>
+    <button type="button" class="tabbtn" data-tab="panel-quiz">❓ What's your type?</button>
+    <button type="button" class="tabbtn" data-tab="panel-routine">📅 Routine</button>
+    <button type="button" class="tabbtn" data-tab="panel-buy">🛒 Things to buy</button>
+  </div>
+  <div class="panel" id="panel-organs">
   <div class="search">
     <input type="search" id="search" placeholder="Search a body part — try “eyes”, “heart”, “skin”…">
   </div>
@@ -115,6 +156,23 @@
   <p class="empty" id="empty">Nothing matches that — try another word like “eyes” or “heart”.</p>
 
   <div id="sections"></div>
+</div>
+  <div class="panel" id="panel-quiz" style="display:none">
+    <h2>❓ What's your type?</h2>
+    <p class="sub">Ayurveda says every person has a dominant body type, and the best care depends on it. Answer honestly — there are no right or wrong answers. Age and gender are optional and only used to personalise your routine; everything is saved only on your phone.</p>
+    <div id="quiz-box"></div>
+  </div>
+  <div class="panel" id="panel-routine" style="display:none">
+    <h2>📅 Your 4-week routine</h2>
+    <p class="sub">One month, four themes — every organ gets its turn without cramming everything into one week. Tick things off as you do them; your ticks are saved on your phone.</p>
+    <div id="routine-box"></div>
+  </div>
+  <div class="panel" id="panel-buy" style="display:none">
+    <h2>🛒 Things to buy</h2>
+    <p class="sub">Everything mentioned across the organ sections, grouped for shopping. No brands, no prices — buy whatever good-quality version you find. Tick items off as you buy them.</p>
+    <div id="buy-box"></div>
+  </div>
+
 
   <footer>
     Made with the idea that ancient wisdom should be easy to understand.<br>
@@ -369,6 +427,244 @@ document.getElementById("search").addEventListener("input", function (e) {
   });
   emptyEl.style.display = shown === 0 ? "block" : "none";
 });
+
+/* ---------- Tabs ---------- */
+var tabBtns = document.querySelectorAll(".tabbtn");
+function showTab(id) {
+  document.querySelectorAll(".panel").forEach(function (p) { p.style.display = "none"; });
+  document.getElementById(id).style.display = "block";
+  tabBtns.forEach(function (b) { b.classList.toggle("active", b.getAttribute("data-tab") === id); });
+  if (id === "panel-routine") renderRoutine();
+}
+tabBtns.forEach(function (b) {
+  b.addEventListener("click", function () { showTab(b.getAttribute("data-tab")); });
+});
+
+/* ---------- Quiz ---------- */
+var TYPES = {
+  v: { sk: "Vata", plain: "Light & Quick", desc: "You are light, quick and full of ideas — but you get cold, dry and anxious easily, and your energy comes in bursts.",
+    tweaks: ["Favour warm, oily, freshly cooked food; avoid lots of cold, dry, raw food.", "Keep fixed meal and sleep times — routine is your best friend.", "Extra warm oil massage, and keep yourself warm in cold, windy weather."] },
+  p: { sk: "Pitta", plain: "Hot & Sharp", desc: "You are sharp, driven and strong-willed — but you run hot, get irritated easily, and your digestion is strong.",
+    tweaks: ["Favour cooling foods; go easy on very spicy, sour and fried food.", "Avoid the harsh midday sun and don't skip meals — hunger makes you irritable.", "Cooling activities help: evening walks, calm breathing, enough sleep."] },
+  k: { sk: "Kapha", plain: "Steady & Heavy", desc: "You are steady, calm and strong — but you gain weight easily, feel heavy and slow in the mornings, and love comfort.",
+    tweaks: ["Favour light, warm, spiced food; go easy on heavy, oily, sweet food.", "Move every day and wake up early — movement is your medicine.", "Avoid long daytime naps and very heavy late dinners."] }
+};
+var QUIZ_Q = [
+  { q: "Your body frame is mostly…", opts: [["Light and slim; gaining weight is hard", "v"], ["Medium and well-proportioned", "p"], ["Solid and sturdy; gaining weight is easy", "k"]] },
+  { q: "Your skin is usually…", opts: [["Dry, thin and cool", "v"], ["Sensitive, warm, sometimes reddish", "p"], ["Smooth, cool and slightly oily", "k"]] },
+  { q: "Your hunger is…", opts: [["Irregular — you sometimes forget meals", "v"], ["Sharp — you get very hungry and irritable", "p"], ["Steady — you can skip a meal without trouble", "k"]] },
+  { q: "Your digestion is…", opts: [["Gassy, bloated, irregular", "v"], ["Strong, but acidity troubles you", "p"], ["Slow — you feel heavy after eating", "k"]] },
+  { q: "Your sleep is…", opts: [["Light; falling asleep is hard", "v"], ["Moderate; you may wake up feeling warm", "p"], ["Deep and long; waking up is hard", "k"]] },
+  { q: "Weather you dislike most…", opts: [["Cold and windy", "v"], ["Hot and sunny", "p"], ["Cold and damp", "k"]] },
+  { q: "Your energy through the day is…", opts: [["Bursts of energy, then tiredness", "v"], ["Intense and driven", "p"], ["Steady, but slow to start", "k"]] },
+  { q: "Under stress you mostly become…", opts: [["Anxious and worried", "v"], ["Irritated and critical", "p"], ["Quiet and withdrawn", "k"]] },
+  { q: "You speak and move…", opts: [["Fast and quick", "v"], ["Sharp and precise", "p"], ["Slow and calm", "k"]] },
+  { q: "Learning for you is…", opts: [["Fast to learn, fast to forget", "v"], ["Good learning, good memory", "p"], ["Slow to learn, but you never forget", "k"]] }
+];
+function getQuiz() {
+  try { return JSON.parse(localStorage.getItem("ayurQuiz") || "null"); } catch (e) { return null; }
+}
+function renderQuiz() {
+  var box = document.getElementById("quiz-box");
+  var saved = getQuiz();
+  if (saved) {
+    var t = TYPES[saved.type];
+    var html = '<div class="result"><h3>Your type: ' + t.sk + ' — ' + t.plain + '</h3><p>' + t.desc + '</p><ul>' +
+      t.tweaks.map(function (x) { return "<li>" + x + "</li>"; }).join("") + "</ul>" +
+      "<p style='margin-top:10px;font-size:14px;color:#5c6653'>Your Routine tab is now personalised for this type." +
+      (saved.age ? " Age band: " + saved.age + "." : "") +
+      (saved.gender && saved.gender !== "Prefer not to say" ? " Gender: " + saved.gender + "." : "") + "</p></div>" +
+      '<button type="button" class="btn secondary" id="retake">Retake the quiz</button>';
+    box.innerHTML = html;
+    document.getElementById("retake").addEventListener("click", function () {
+      localStorage.removeItem("ayurQuiz"); renderQuiz();
+    });
+    return;
+  }
+  var html = '<div class="field"><label>Age band: <select id="q-age"><option>Under 18</option><option selected>18–30</option><option>31–50</option><option>50+</option></select></label></div>' +
+    '<div class="field"><label>Gender: <select id="q-gender"><option>Female</option><option>Male</option><option selected>Prefer not to say</option></select></label></div>';
+  QUIZ_Q.forEach(function (item, i) {
+    html += '<div class="quiz-q"><p>' + (i + 1) + '. ' + item.q + '</p>' +
+      item.opts.map(function (o) {
+        return '<label><input type="radio" name="q' + i + '" value="' + o[1] + '"> ' + o[0] + '</label>';
+      }).join("") + '</div>';
+  });
+  html += '<p class="err" id="quiz-err">Please answer all 10 questions first.</p>' +
+    '<button type="button" class="btn" id="quiz-submit">See my type</button>';
+  box.innerHTML = html;
+  document.getElementById("quiz-submit").addEventListener("click", function () {
+    var scores = { v: 0, p: 0, k: 0 };
+    for (var i = 0; i < QUIZ_Q.length; i++) {
+      var sel = document.querySelector('input[name="q' + i + '"]:checked');
+      if (!sel) { document.getElementById("quiz-err").style.display = "block"; return; }
+      scores[sel.value]++;
+    }
+    var best = "v", bestScore = -1;
+    ["v", "p", "k"].forEach(function (t) { if (scores[t] > bestScore) { bestScore = scores[t]; best = t; } });
+    localStorage.setItem("ayurQuiz", JSON.stringify({
+      age: document.getElementById("q-age").value,
+      gender: document.getElementById("q-gender").value,
+      type: best, scores: scores
+    }));
+    renderQuiz();
+  });
+}
+
+/* ---------- Routine ---------- */
+var WEEKS = [
+  { title: "Week 1 — Head & senses", focus: "Brain, eyes, ears, nose, mouth, tongue, throat, face, hair & scalp",
+    tasks: [
+      ["Scrape your tongue every morning", ""],
+      ["Oil pulling (swish sesame or coconut oil) a few mornings", ""],
+      ["Eye rest: blink often, palm-cup your eyes when on screens", ""],
+      ["2–3 drops of lukewarm sesame oil in each ear, once this week", ""],
+      ["2 drops of warm oil in each nostril in the morning", ""],
+      ["Salt-water gargle whenever the throat feels scratchy", ""],
+      ["Light face oil massage a few times", ""],
+      ["Warm scalp oil massage (amla or bhringraj oil) once or twice", ""]
+    ] },
+  { title: "Week 2 — Body & movement", focus: "Skin, neck & back, shoulders, arms, hands, nails, legs, knees, ankles, feet, bones, joints, muscles",
+    tasks: [
+      ["Full-body warm oil massage before bath, once or twice", ""],
+      ["Walk 30 minutes every day", ""],
+      ["Neck and back stretches, morning and evening", ""],
+      ["Shoulder rolls and arm circles daily", ""],
+      ["Hand and finger stretches during work breaks", ""],
+      ["Trim nails, oil the cuticles", ""],
+      ["Warm oil massage on knees and feet before sleeping", ""],
+      ["Some sunlight for vitamin D", ""]
+    ] },
+  { title: "Week 3 — Inner organs", focus: "Heart, lungs, liver, stomach, gut, kidneys, bladder, pancreas, gallbladder, spleen, blood, thyroid",
+    tasks: [
+      ["Eat warm, freshly cooked food at fixed times", ""],
+      ["Short walk after meals", ""],
+      ["10 minutes of slow, deep breathing daily", ""],
+      ["Drink water through the day; don't hold urine", ""],
+      ["Bitter greens and turmeric in food a few times", ""],
+      ["Steam if congested; tulsi-ginger tea when needed", ""],
+      ["Keep salt moderate; avoid very fatty, fried meals", ""],
+      ["If a checkup (sugar, BP, thyroid) is due, book it this week", ""]
+    ] },
+  { title: "Week 4 — Whole body & personal", focus: "Immunity, reproductive health, breast, periods, prostate, piles, tonsils",
+    tasks: [
+      ["Sleep before 10 pm all week", ""],
+      ["Amla, turmeric milk or tulsi in your daily food", ""],
+      ["Monthly breast self-check", "f"],
+      ["Period care: rest on heavy days, iron-rich food", "f"],
+      ["Prostate checkup if you are a man over 40 and it is due", "m"],
+      ["Fibre + water every day; don't strain (piles care)", ""],
+      ["One full rest day — no heavy work, early sleep", ""],
+      ["Review the month: what helped? Keep that going", ""]
+    ] }
+];
+function loadChecks(key) {
+  try { return JSON.parse(localStorage.getItem(key) || "{}"); } catch (e) { return {}; }
+}
+function renderRoutine() {
+  var box = document.getElementById("routine-box");
+  var saved = getQuiz();
+  var gender = saved ? saved.gender : "Prefer not to say";
+  var banner;
+  if (saved) {
+    var t = TYPES[saved.type];
+    banner = '<div class="result"><h3>Personalised for you: ' + t.sk + ' (' + t.plain + ')</h3><ul>' +
+      t.tweaks.map(function (x) { return "<li>" + x + "</li>"; }).join("") + "</ul>" +
+      (saved.age === "50+" ? "<p style='margin-top:8px'>50+ focus: give extra attention to bones & joints, and keep up regular checkups.</p>" : "") +
+      (saved.age === "Under 18" ? "<p style='margin-top:8px'>Under 18: follow this with a parent's guidance, and use herbs only if an expert advises.</p>" : "") +
+      "</div>";
+  } else {
+    banner = '<div class="result"><h3>Common routine for everyone</h3><p>Take the quiz and this page will adjust to your body type — warming tips if you run cold, cooling tips if you run hot, and more movement if you run steady.</p></div>';
+  }
+  var checks = loadChecks("ayurRoutineChecks");
+  var html = banner + "<p>Daily basics, every day: sleep before 10, warm freshly cooked food at fixed times, 30-minute walk, 10 minutes of slow breathing.</p>";
+  WEEKS.forEach(function (w, wi) {
+    html += '<div class="week"><h3>' + w.title + '</h3><p class="focus">Covers: ' + w.focus + '</p><ul>';
+    w.tasks.forEach(function (task, ti) {
+      if (task[1] === "f" && gender === "Male") return;
+      if (task[1] === "m" && gender === "Female") return;
+      var key = "w" + wi + "t" + ti;
+      var done = !!checks[key];
+      html += '<li class="' + (done ? "done" : "") + '"><label><input type="checkbox" data-rkey="' + key + '"' + (done ? " checked" : "") + "> " + task[0] + "</label></li>";
+    });
+    html += "</ul></div>";
+  });
+  html += '<button type="button" class="btn secondary" id="routine-reset">Reset all ticks</button>';
+  box.innerHTML = html;
+  box.querySelectorAll("input[data-rkey]").forEach(function (cb) {
+    cb.addEventListener("change", function () {
+      var c = loadChecks("ayurRoutineChecks");
+      c[cb.getAttribute("data-rkey")] = cb.checked;
+      localStorage.setItem("ayurRoutineChecks", JSON.stringify(c));
+      cb.closest("li").classList.toggle("done", cb.checked);
+    });
+  });
+  document.getElementById("routine-reset").addEventListener("click", function () {
+    localStorage.removeItem("ayurRoutineChecks"); renderRoutine();
+  });
+}
+
+/* ---------- Things to buy ---------- */
+var BUY = [
+  { group: "Oils", items: [
+    ["Sesame oil", "Oil massage, ear drops, nose drops, joint and foot massage"],
+    ["Coconut oil", "Oil pulling for mouth health"],
+    ["Amla oil", "Scalp and hair massage"],
+    ["Bhringraj oil", "Scalp and hair massage"]
+  ] },
+  { group: "Herbs & powders", items: [
+    ["Triphala", "Eye wash tradition, gentle gut regulator (only with advice)"],
+    ["Brahmi", "Memory and calm (only with expert advice)"],
+    ["Arjuna", "Heart herb (only under expert guidance)"],
+    ["Ashwagandha", "Reproductive health, strength (only with expert advice)"],
+    ["Shatavari", "Reproductive health (only with expert advice)"],
+    ["Chyawanprash", "Daily immunity support (check with an expert first)"],
+    ["Neem", "Oral and skin health"],
+    ["Turmeric", "Skin, immunity, liver"],
+    ["Tulsi", "Lungs, immunity, breathing"],
+    ["Ginger", "Digestion, cold, cough"]
+  ] },
+  { group: "Kitchen staples", items: [
+    ["Amla (fresh or dried)", "Eyes, hair, immunity, liver"],
+    ["Ghee (small amounts)", "Brain, joints, reproductive health"],
+    ["Honey", "Throat, cough, with ginger"],
+    ["Sesame seeds", "Bones, joints, hair"],
+    ["Ragi", "Bones and calcium"],
+    ["Dates & jaggery", "Iron, energy, periods care"],
+    ["Flaxseeds", "Breast health, balanced diet"],
+    ["Pumpkin seeds", "Prostate health, zinc"],
+    ["Buttermilk", "Digestion, gut"],
+    ["Barley & coriander", "Bladder and kidney-friendly waters"],
+    ["Salt", "Warm salt-water gargles"]
+  ] },
+  { group: "Daily-use items", items: [
+    ["Tongue scraper", "Morning tongue cleaning"]
+  ] }
+];
+function renderBuy() {
+  var box = document.getElementById("buy-box");
+  var checks = loadChecks("ayurBuyChecks");
+  var html = "";
+  BUY.forEach(function (g, gi) {
+    html += '<div class="buygroup"><h3>' + g.group + '</h3><ul>';
+    g.items.forEach(function (item, ii) {
+      var key = "g" + gi + "i" + ii;
+      var done = !!checks[key];
+      html += '<li><label><input type="checkbox" data-bkey="' + key + '"' + (done ? " checked" : "") + "> <strong>" + item[0] + '</strong> <span class="for">— used for: ' + item[1] + "</span></label></li>";
+    });
+    html += "</ul></div>";
+  });
+  box.innerHTML = html;
+  box.querySelectorAll("input[data-bkey]").forEach(function (cb) {
+    cb.addEventListener("change", function () {
+      var c = loadChecks("ayurBuyChecks");
+      c[cb.getAttribute("data-bkey")] = cb.checked;
+      localStorage.setItem("ayurBuyChecks", JSON.stringify(c));
+    });
+  });
+}
+
+renderQuiz();
+renderBuy();
 </script>
 </body>
 </html>
