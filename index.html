@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ayurveda, Simply — Keep Every Part Healthy</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, sans-serif;
+    background: #f7f4ec;
+    color: #22271f;
+    line-height: 1.6;
+  }
+  .wrap { width: min(94vw, 860px); margin: 0 auto; padding: 28px 0 64px; }
+  header { text-align: center; padding: 12px 8px 8px; }
+  header h1 { font-family: Georgia, serif; font-size: 40px; line-height: 1.15; }
+  header p { margin-top: 10px; font-size: 17px; color: #5c6653; max-width: 620px; margin-left: auto; margin-right: auto; }
+  .notice {
+    margin: 22px 0 8px;
+    background: #fff8dd;
+    border: 1px solid #e3d49a;
+    border-radius: 14px;
+    padding: 14px 18px;
+    font-size: 14px;
+    color: #5a5228;
+  }
+  .basics {
+    margin: 20px 0 8px;
+    background: #eef3e6;
+    border-radius: 16px;
+    padding: 18px 20px;
+  }
+  .basics h2 { font-size: 18px; margin-bottom: 8px; }
+  .basics ul { padding-left: 20px; font-size: 15px; }
+  .search { margin: 22px 0 6px; }
+  .search input {
+    width: 100%;
+    padding: 14px 18px;
+    font-size: 17px;
+    border: 1px solid #d8d2c2;
+    border-radius: 999px;
+    background: #fffdf8;
+    outline: none;
+  }
+  .search input:focus { border-color: #5c7a4d; }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 12px;
+    margin: 18px 0 30px;
+  }
+  .card {
+    background: #fffdf8;
+    border: 1px solid #e2dccb;
+    border-radius: 16px;
+    padding: 16px 14px;
+    cursor: pointer;
+    text-align: left;
+    font-family: inherit;
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+  }
+  .card:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,0.07); }
+  .card .emoji { font-size: 30px; display: block; margin-bottom: 6px; }
+  .card .name { font-weight: 700; font-size: 15px; display: block; }
+  .card .tip { font-size: 13px; color: #6a7263; display: block; margin-top: 2px; }
+  section.organ {
+    background: #fffdf8;
+    border: 1px solid #e2dccb;
+    border-radius: 18px;
+    padding: 22px 22px 18px;
+    margin: 16px 0;
+  }
+  section.organ h2 { font-family: Georgia, serif; font-size: 26px; margin-bottom: 12px; }
+  .block { margin: 12px 0; }
+  .block h3 { font-size: 14px; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 4px; }
+  .block.do h3 { color: #3d7a3d; }
+  .block.eat h3 { color: #8a6a1d; }
+  .block.avoid h3 { color: #b03a2e; }
+  .block.watch h3 { color: #6a5a00; }
+  .block ul { padding-left: 20px; font-size: 15px; }
+  .back { display: inline-block; margin-top: 10px; font-size: 13px; color: #5c7a4d; text-decoration: none; }
+  .back:hover { text-decoration: underline; }
+  footer { text-align: center; font-size: 13px; color: #7a7f72; margin-top: 36px; padding: 0 16px; }
+  .empty { text-align: center; color: #7a7f72; padding: 20px; display: none; }
+</style>
+</head>
+<body>
+<div class="wrap" id="top">
+  <header>
+    <h1>🌿 Ayurveda, Simply</h1>
+    <p>What Ayurveda suggests for keeping every part of your body healthy — in plain words, no complicated terms, no jargon.</p>
+  </header>
+
+  <div class="notice">
+    <strong>Please read:</strong> this is general wellness information from Ayurvedic tradition, not medical advice. If you have a health problem, are pregnant, or take medicines, talk to a qualified doctor or Ayurvedic practitioner first — herbs can interact with medicines.
+  </div>
+
+  <div class="basics">
+    <h2>🌞 5 daily basics that help everything</h2>
+    <ul>
+      <li><strong>Sleep on time</strong> — aim to sleep before 10 pm and wake up early.</li>
+      <li><strong>Eat warm, freshly cooked food</strong> at roughly the same times every day.</li>
+      <li><strong>Move every day</strong> — a 30-minute walk is enough.</li>
+      <li><strong>Oil massage</strong> — a quick warm-oil massage before bath keeps skin, joints and sleep healthy.</li>
+      <li><strong>Breathe</strong> — 10 minutes of slow, deep breathing calms the mind and the body.</li>
+    </ul>
+  </div>
+
+  <div class="search">
+    <input type="search" id="search" placeholder="Search a body part — try “eyes”, “heart”, “skin”…">
+  </div>
+
+  <div class="grid" id="grid"></div>
+  <p class="empty" id="empty">Nothing matches that — try another word like “eyes” or “heart”.</p>
+
+  <div id="sections"></div>
+
+  <footer>
+    Made with the idea that ancient wisdom should be easy to understand.<br>
+    General information only — not a replacement for medical care.
+  </footer>
+</div>
+
+<script>
+var ORGANS = [
+  { id: "brain", emoji: "🧠", name: "Brain & Mind", tip: "Sleep before 10, calm the mind daily.",
+    do: ["Sleep before 10 pm and wake up early — the mind recovers at night.", "Meditate or sit quietly for 10 minutes a day.", "Massage warm oil into the scalp and head once or twice a week."],
+    eat: ["Walnuts, ghee in small amounts, and warm milk at night.", "Brahmi is the herb traditionally used for memory and calm — only with expert advice."],
+    avoid: ["Screens late at night and sleeping very late.", "Constant multitasking, loud noise and overstimulation.", "Skipping meals and sleeping too little for days."],
+    watch: ["Low mood, anxiety or forgetfulness that lasts weeks — talk to a doctor, don't self-diagnose."] },
+  { id: "eyes", emoji: "👀", name: "Eyes", tip: "Blink often, rest them, eat greens.",
+    do: ["Blink consciously and look away from screens every 20 minutes.", "Rub your palms together and gently cup them over closed eyes to rest them.", "Massage oil into the soles of your feet — tradition links this to eye health."],
+    eat: ["Amla, carrots, leafy greens and a little ghee.", "Triphala water as a gentle morning eye wash is the traditional practice."],
+    avoid: ["Long screen hours in a dark room.", "Rubbing your eyes hard and staring without blinking.", "Very bright light and dusty, smoky air without protection."],
+    watch: ["Eye pain, redness that won't go away, or any change in vision — see an eye doctor promptly."] },
+  { id: "ears", emoji: "👂", name: "Ears", tip: "A little warm oil, low volume.",
+    do: ["Put 2–3 drops of lukewarm sesame oil in each ear once in a while (the traditional practice).", "Keep ears dry after bathing or swimming.", "Massage gently around the ears during your oil massage."],
+    eat: ["Warm, moist, freshly cooked food; drink enough water."],
+    avoid: ["Very loud music and earphones at full volume.", "Pushing earbuds or objects deep inside the ear.", "Cold wind blowing straight into the ears."],
+    watch: ["Ringing, pain, discharge or hearing loss — get it checked, don't ignore it."] },
+  { id: "nose", emoji: "👃", name: "Nose & Sinuses", tip: "Oil drops keep the passages clear.",
+    do: ["Put 2 drops of warm sesame or medicated oil in each nostril in the morning (the traditional practice).", "Take steam with plain hot water when congested.", "Keep your surroundings dust-free."],
+    eat: ["Ginger tea with honey, warm soups and spices like black pepper."],
+    avoid: ["Dust, smoke and strong chemical smells.", "Very cold drinks and ice cream when you already have a cold.", "Blowing your nose too hard."],
+    watch: ["Blocked nose for weeks, nosebleeds, or loss of smell — see a doctor."] },
+  { id: "mouth", emoji: "🦷", name: "Mouth, Teeth & Gums", tip: "Oil swish + tongue scrape every morning.",
+    do: ["Swish a spoon of sesame or coconut oil in your mouth for a few minutes, then spit it out (oil pulling).", "Scrape your tongue gently every morning.", "Brush twice a day and massage your gums with a clean finger."],
+    eat: ["Crunchy vegetables, sesame seeds, and calcium-rich foods.", "Neem is traditionally valued for oral health."],
+    avoid: ["Too much sugar, sticky sweets and tobacco.", "Very sour foods in excess and biting very hard things.", "Skipping brushing at night."],
+    watch: ["Bleeding gums, mouth sores that don't heal, or persistent bad breath — see a dentist."] },
+  { id: "throat", emoji: "🗣️", name: "Throat & Voice", tip: "Warm drinks, gentle voice.",
+    do: ["Gargle with warm salt water when the throat feels scratchy.", "Sip warm water through the day.", "Rest your voice when it feels strained."],
+    eat: ["Honey with ginger, warm soups and herbal teas."],
+    avoid: ["Shouting for long periods and whispering when hoarse.", "Very cold drinks, smoking and polluted air.", "Talking loudly in cold, dry wind."],
+    watch: ["Hoarseness lasting more than 2 weeks, or difficulty swallowing — see a doctor."] },
+  { id: "skin", emoji: "✨", name: "Skin", tip: "Daily oil massage is the big one.",
+    do: ["Massage warm oil over your whole body before bathing — this is the single most recommended skin practice.", "Bathe with lukewarm water, not very hot.", "Protect yourself from harsh sun."],
+    eat: ["Turmeric, neem, aloe vera, leafy greens and enough water.", "Fresh fruits and light, non-spicy food when skin is irritated."],
+    avoid: ["Harsh soaps, strong chemical creams and over-scrubbing.", "Too much sun, very hot water and heavy, oily, spicy food in excess.", "Scratching rashes and picking at pimples."],
+    watch: ["Moles that change shape or colour, wounds that don't heal, or spreading rashes — see a doctor."] },
+  { id: "hair", emoji: "💇", name: "Hair & Scalp", tip: "Oil, gentle washing, less heat.",
+    do: ["Massage the scalp with warm oil (amla or bhringraj oil are the traditional choices) once or twice a week.", "Wash gently; let hair dry naturally when you can.", "Comb gently — don't yank through tangles."],
+    eat: ["Protein (dal, eggs, paneer), iron-rich greens, sesame seeds and amla."],
+    avoid: ["Harsh chemical treatments, daily heat styling and very hot water.", "Tight hairstyles that pull the scalp.", "Stress and poor sleep — they show up in hair first."],
+    watch: ["Sudden patchy hair loss or an itchy, flaky scalp that won't settle — get it checked."] },
+  { id: "heart", emoji: "❤️", name: "Heart", tip: "Walk daily, keep stress low.",
+    do: ["Walk briskly for 30 minutes most days.", "Practise slow breathing and keep stress in check — the heart and the mind are linked.", "Sleep well and keep a regular routine."],
+    eat: ["Garlic, leafy greens, walnuts, oats and moderate healthy fats.", "Arjuna bark is Ayurveda's best-known heart herb — only under expert guidance."],
+    avoid: ["Too much salt, deep-fried food and processed snacks.", "Smoking and alcohol.", "Chronic stress, anger and sleeping too little."],
+    watch: ["Chest pain, pressure, or breathlessness — treat as urgent and get medical help immediately."] },
+  { id: "lungs", emoji: "🫁", name: "Lungs & Breathing", tip: "Breathe deeply, avoid smoke.",
+    do: ["Practise deep breathing for 10 minutes a day.", "Take steam when congested.", "Spend time in fresh air."],
+    eat: ["Tulsi, ginger and honey in warm water.", "Warm soups and light, warm food."],
+    avoid: ["Smoke of any kind, dust and polluted air.", "Very cold air and cold drinks when you have a cough.", "Suppressing a cough for weeks without checking it."],
+    watch: ["Persistent cough, wheezing, or coughing blood — see a doctor promptly."] },
+  { id: "liver", emoji: "🫀", name: "Liver", tip: "Light food, no alcohol overload.",
+    do: ["Eat at regular times and don't overload one meal.", "Keep portions moderate and chew well.", "Stay active — movement helps the liver too."],
+    eat: ["Bitter greens, turmeric, amla and light, easily digested food.", "Warm water through the day."],
+    avoid: ["Alcohol and frequent fried, heavy food.", "Overeating late at night.", "Unnecessary medicines without advice."],
+    watch: ["Yellow eyes or skin, dark urine, or constant tiredness — see a doctor soon."] },
+  { id: "stomach", emoji: "🍲", name: "Stomach & Digestion", tip: "Warm food, fixed times, chew well.",
+    do: ["Eat warm, freshly cooked meals at roughly the same time daily.", "Chew slowly and eat until comfortably full — not stuffed.", "Sip warm water; a short walk after meals helps."],
+    eat: ["Ginger, cumin, fennel and buttermilk.", "Khichdi and soups when digestion feels weak."],
+    avoid: ["Overeating, eating very fast, and heavy late-night meals.", "Ice-cold drinks with meals and too much raw, cold food.", "Processed food and constant snacking."],
+    watch: ["Frequent acidity, stomach pain, vomiting or blood in vomit/stool — see a doctor."] },
+  { id: "gut", emoji: "🌿", name: "Intestines & Gut", tip: "Fibre, routine, don't hold back.",
+    do: ["Keep a regular toilet routine and don't hold back natural urges.", "Eat enough fibre and drink enough water.", "Move daily — walking keeps the gut moving."],
+    eat: ["Triphala at night is the traditional gentle regulator — only with advice.", "Buttermilk, soaked raisins, fruits and vegetables."],
+    avoid: ["Dry, junk food and too little water.", "Holding back bowel urges for hours.", "Overusing strong laxatives."],
+    watch: ["Blood in stool, sudden weight loss, or bowel changes lasting weeks — see a doctor."] },
+  { id: "kidneys", emoji: "💧", name: "Kidneys & Urinary", tip: "Drink water, don't hold urine.",
+    do: ["Drink water through the day — don't wait for extreme thirst.", "Pass urine when you feel the urge; don't hold it for hours.", "Keep blood pressure and sugar in check with regular checkups."],
+    eat: ["Coriander water, light food and plenty of fluids.", "Reduce salt gradually rather than suddenly."],
+    avoid: ["Too much salt and processed food.", "Overuse of painkillers without medical advice.", "Holding urine and drinking too little water."],
+    watch: ["Burning while passing urine, blood in urine, swelling of feet/face — see a doctor."] },
+  { id: "bones", emoji: "🦴", name: "Bones & Joints", tip: "Oil massage + calcium foods.",
+    do: ["Massage joints with warm sesame oil regularly.", "Get sunlight for vitamin D and move joints gently every day.", "Do weight-bearing activity like walking."],
+    eat: ["Sesame seeds, ragi, milk, paneer and leafy greens.", "Ghee in small amounts is traditionally valued for joints."],
+    avoid: ["Excess dry, cold and light food when joints ache.", "Sudden jerky movements and overexertion.", "Sitting in one position for very long hours."],
+    watch: ["Swollen, hot or deformed joints, or pain that keeps getting worse — get it checked."] },
+  { id: "muscles", emoji: "💪", name: "Muscles", tip: "Warm up, rest, protein.",
+    do: ["Warm up before exercise and stretch after.", "Massage sore muscles with warm oil.", "Rest between heavy workouts — muscles grow during rest."],
+    eat: ["Enough protein (dal, milk, eggs, nuts) and warm, nourishing food."],
+    avoid: ["Sudden heavy lifting without warming up.", "Cold exposure right after sweating.", "Exercising through sharp pain."],
+    watch: ["Muscle weakness, or pain that doesn't ease in a few days — see a doctor."] },
+  { id: "feet", emoji: "🦶", name: "Feet", tip: "Oil massage before sleep.",
+    do: ["Massage warm oil into your feet before sleeping — it also helps sleep and eyes, traditionally.", "Keep feet clean, dry and moisturised.", "Wear comfortable footwear."],
+    eat: ["A balanced diet; nothing special — feet mostly need care from outside."],
+    avoid: ["Walking barefoot on rough or very cold ground.", "Tight shoes and damp socks for hours."],
+    watch: ["Cracks that won't heal, numbness, or sores on feet (especially with diabetes) — see a doctor."] },
+  { id: "immunity", emoji: "🛡️", name: "Body's Defence (Immunity)", tip: "Sleep + routine beat quick fixes.",
+    do: ["Sleep well, eat on time and keep a steady daily routine.", "Spend time outdoors and manage stress.", "Chyawanprash and amla are the traditional daily supporters — check with an expert first."],
+    eat: ["Amla, turmeric milk, ginger, tulsi and seasonal fruits."],
+    avoid: ["Erratic sleep, too much sugar and junk food.", "Antibiotics or supplements without need or advice."],
+    watch: ["Falling sick very often, or wounds healing very slowly — get a proper checkup."] },
+  { id: "reproductive", emoji: "🌸", name: "Reproductive Health", tip: "Sleep, calm, nourishing food.",
+    do: ["Sleep well and keep stress low — both directly affect reproductive health.", "Exercise moderately and keep a regular routine."],
+    eat: ["Milk, nuts, dates and ghee in moderation.", "Ashwagandha and shatavari are the traditional herbs here — only with expert advice."],
+    avoid: ["Excess heat, alcohol, smoking and chronic stress.", "Crash diets and overexertion."],
+    watch: ["Persistent problems or pain — talk to a doctor rather than self-treating."] },
+
+  { id: "tongue", emoji: "👅", name: "Tongue", tip: "Scrape it every morning — it shows digestion.",
+    do: ["Scrape your tongue gently every morning before eating.", "Rinse your mouth with warm water after scraping.", "Notice the coating — a thick white coating often means digestion is sluggish."],
+    eat: ["Warm water first thing in the morning.", "Ginger tea and light, warm food when the coating is thick."],
+    avoid: ["Scraping so hard it bleeds.", "Ignoring a thick coating for weeks without fixing food and sleep."],
+    watch: ["Sores that don't heal, or a colour change that stays — see a doctor or dentist."] },
+  { id: "face", emoji: "🪞", name: "Face", tip: "Gentle wash, light oil, good sleep.",
+    do: ["Wash with lukewarm water, not hot.", "Massage a few drops of light oil on the face for a few minutes, then wash off.", "Sleep well — the face shows poor sleep first."],
+    eat: ["Fruits, enough water and light food.", "Turmeric in food is traditionally valued for glow."],
+    avoid: ["Harsh scrubs, strong chemical creams and over-washing.", "Picking at pimples and sleeping with makeup on.", "Too much sun without protection."],
+    watch: ["Rashes that spread, swelling, or sores that don't heal — see a doctor."] },
+  { id: "neckback", emoji: "🧍", name: "Neck & Back", tip: "Posture + gentle movement daily.",
+    do: ["Sit straight and stretch your neck and back morning and evening.", "Massage warm oil along the back and neck once a week.", "Sleep on a supportive pillow, not a very high one."],
+    eat: ["Calcium foods — sesame, ragi, milk — and warm, nourishing food."],
+    avoid: ["Bending over a phone for hours (phone-neck).", "Lifting heavy things with a bent back.", "Cold wind on a sweaty back."],
+    watch: ["Numbness or weakness in arms or legs, or pain after an injury — see a doctor."] },
+  { id: "shoulders", emoji: "🙌", name: "Shoulders & Arms", tip: "Roll them, don't hunch.",
+    do: ["Roll your shoulders and circle your arms every day.", "Massage shoulders with warm oil when they feel tight.", "Keep shoulders relaxed and down, not up near your ears."],
+    eat: ["Protein foods, sesame and warm, nourishing meals."],
+    avoid: ["Carrying a heavy bag on the same side every day.", "Hunching over a phone or laptop for hours."],
+    watch: ["Shoulder pain that limits movement, or pain after a fall — see a doctor or physio."] },
+  { id: "hands", emoji: "✋", name: "Hands & Fingers", tip: "Stretch them, oil them, rest them.",
+    do: ["Stretch and spread your fingers, then squeeze and release, a few times a day.", "Massage hands with warm oil.", "Keep nails clean and trimmed."],
+    eat: ["Protein, nuts and calcium-rich foods."],
+    avoid: ["Gripping or typing for hours without a break.", "Very cold water on hands right after heat or exertion."],
+    watch: ["Numbness or tingling in fingers, or swelling that stays — see a doctor."] },
+  { id: "nails", emoji: "💅", name: "Nails", tip: "Trim, clean, oil the cuticles.",
+    do: ["Trim nails regularly and keep them clean and dry.", "Rub a drop of oil into the cuticles.", "File gently in one direction."],
+    eat: ["Protein, iron-rich greens, sesame, eggs and nuts."],
+    avoid: ["Biting nails.", "Harsh nail removers every day.", "Keeping nails long and dirty."],
+    watch: ["Nails turning dark, lifting off, or painful swelling around a nail — see a doctor."] },
+  { id: "legs", emoji: "🦵", name: "Legs & Knees", tip: "Walk, stretch, oil the knees.",
+    do: ["Walk every day and do gentle knee bends.", "Massage knees with warm sesame oil.", "Stretch calves and thighs after walking."],
+    eat: ["Calcium foods — sesame, ragi, milk — and enough protein."],
+    avoid: ["Sitting cross-legged for very long hours.", "Sudden deep squats with heavy weight.", "Ignoring knee pain until it gets worse."],
+    watch: ["Knee swelling, locking, or pain that keeps worsening — see a doctor."] },
+  { id: "ankles", emoji: "👣", name: "Ankles & Heels", tip: "Warm oil + comfortable shoes.",
+    do: ["Rotate your ankles in circles every day.", "Massage heels and ankles with warm oil.", "Wear cushioned, comfortable footwear."],
+    eat: ["Calcium-rich food and warm, nourishing meals."],
+    avoid: ["High heels every day.", "Long walks in flat, hard shoes."],
+    watch: ["Ankle swelling that stays, or heel pain every morning — see a doctor."] },
+  { id: "blood", emoji: "🩸", name: "Blood & Circulation", tip: "Move, breathe, eat iron foods.",
+    do: ["Walk daily and practise deep breathing.", "Keep hands and feet warm in cold weather.", "Move around if you sit for long hours."],
+    eat: ["Iron-rich greens, dates, beetroot and pomegranate.", "Vitamin C foods (amla, citrus) help the body absorb iron."],
+    avoid: ["Smoking.", "Sitting completely still for very long stretches.", "Too much salty, processed food."],
+    watch: ["Constant tiredness, pale skin or dizziness — get your blood checked."] },
+  { id: "pancreas", emoji: "⚖️", name: "Pancreas & Blood Sugar", tip: "Fixed meal times, less sugar.",
+    do: ["Eat at regular times and walk after meals.", "Keep weight steady and sleep on time."],
+    eat: ["Bitter gourd, fenugreek, whole grains and fibre-rich food."],
+    avoid: ["Sugary drinks and sweets every day.", "Heavy late-night meals and constant snacking."],
+    watch: ["Excess thirst, passing urine very often, or unexplained weight loss — get your sugar tested."] },
+  { id: "gallbladder", emoji: "🟡", name: "Gallbladder", tip: "Regular meals, moderate fat.",
+    do: ["Eat regular meals — don't skip food for very long stretches.", "Lose weight slowly if needed, never by crash dieting."],
+    eat: ["Light food, fibre and bitter greens.", "Moderate healthy fats, not large fried meals."],
+    avoid: ["Very fatty, fried meals in one sitting.", "Crash diets and rapid weight loss."],
+    watch: ["Sharp pain in the upper right belly after fatty food, with nausea — see a doctor."] },
+  { id: "spleen", emoji: "🟠", name: "Spleen", tip: "Warm, light, regular food.",
+    do: ["Eat warm, cooked food at regular times.", "Rest properly when you feel run down."],
+    eat: ["Light grains, cooked vegetables and ginger.", "Avoid overeating — small, regular meals suit it best."],
+    avoid: ["Lots of cold, raw food.", "Overeating and very irregular meal times."],
+    watch: ["Pain under the left ribs, frequent infections, or constant tiredness — see a doctor."] },
+  { id: "bladder", emoji: "💦", name: "Bladder", tip: "Don't hold it, stay hydrated.",
+    do: ["Pass urine when you feel the urge — don't hold it for hours.", "Drink water through the day.", "Keep the area clean."],
+    eat: ["Coriander water, barley water and light food."],
+    avoid: ["Holding urine for hours.", "Too much caffeine and alcohol.", "Very spicy food when the bladder feels irritated."],
+    watch: ["Burning, blood in urine, or needing to go very often — see a doctor."] },
+  { id: "thyroid", emoji: "🦋", name: "Thyroid & Hormones", tip: "Routine, sleep, regular checkups.",
+    do: ["Sleep on time and keep a steady routine.", "Manage stress — it disturbs hormones too.", "Get your thyroid checked if symptoms appear."],
+    eat: ["Iodised salt in normal amounts, nuts and seeds, and a balanced diet."],
+    avoid: ["Crash diets.", "Ignoring tiredness, weight change or mood change for months."],
+    watch: ["Unexplained weight gain or loss, constant tiredness, hair fall, or always feeling cold or hot — get tested."] },
+  { id: "breast", emoji: "🎀", name: "Breast Health", tip: "Monthly self-check — any lump means doctor.",
+    do: ["Do a monthly self-check after your periods.", "Wear comfortable, well-fitting support.", "Keep weight steady and stay active."],
+    eat: ["A balanced diet, flaxseeds and leafy greens."],
+    avoid: ["Ignoring lumps or changes.", "Smoking and alcohol."],
+    watch: ["Any new lump, nipple discharge, or skin change on the breast — see a doctor promptly, don't wait."] },
+  { id: "periods", emoji: "🌙", name: "Periods & Menstrual Health", tip: "Rest, warmth, iron foods.",
+    do: ["Rest on heavy days and move gently.", "Eat warm food and track your cycle dates."],
+    eat: ["Iron-rich food — greens, dates, jaggery — plus warm soups and sesame."],
+    avoid: ["Very cold food and drinks on period days (traditional advice).", "Overexertion and skipping rest on heavy days."],
+    watch: ["Very heavy bleeding, severe pain, or missed periods repeatedly — see a doctor."] },
+  { id: "prostate", emoji: "🧔", name: "Prostate (Men 40+)", tip: "After 40, get it checked.",
+    do: ["Get prostate checkups after age 40.", "Pass urine fully and stay active."],
+    eat: ["Tomatoes, pumpkin seeds, zinc-rich foods and a balanced diet."],
+    avoid: ["Holding urine for hours.", "Too much alcohol and very spicy food when irritated."],
+    watch: ["Weak urine flow, waking many times at night to urinate, or blood in urine — see a doctor."] },
+  { id: "piles", emoji: "🪑", name: "Piles & Bottom Care", tip: "Fibre, water, don't strain.",
+    do: ["Eat fibre and drink enough water.", "Don't sit on the toilet for a long time.", "Wash gently with water."],
+    eat: ["Fruits, vegetables, buttermilk and soaked raisins."],
+    avoid: ["Straining hard.", "Sitting for hours without moving.", "Very spicy, dry food and too little water."],
+    watch: ["Bleeding, severe pain, or a lump that doesn't go back — see a doctor."] },
+  { id: "appendix", emoji: "❔", name: "Appendix", tip: "Placeholder — guidance coming soon.",
+    do: ["This section is a placeholder for now — we will add real guidance here later.", "For now, the 5 daily basics at the top apply to everything."],
+    eat: [],
+    avoid: [],
+    watch: ["Sudden severe pain in the lower right belly, with fever or vomiting — go to hospital urgently, this can be appendicitis."] },
+  { id: "tonsils", emoji: "🎙️", name: "Tonsils", tip: "Salt gargle at the first scratch.",
+    do: ["Gargle with warm salt water at the first sign of a sore throat.", "Sip warm fluids and rest your voice."],
+    eat: ["Honey with ginger and warm soups."],
+    avoid: ["Very cold drinks and ice cream when the throat hurts.", "Shouting when the throat is already sore."],
+    watch: ["Tonsils swollen with fever again and again, or trouble breathing or swallowing — see a doctor."] }
+
+];
+
+var grid = document.getElementById("grid");
+var sectionsEl = document.getElementById("sections");
+var emptyEl = document.getElementById("empty");
+
+function blockHTML(cls, title, items) {
+  if (!items || !items.length) return "";
+  return '<div class="block ' + cls + '"><h3>' + title + '</h3><ul>' +
+    items.map(function (t) { return "<li>" + t + "</li>"; }).join("") + "</ul></div>";
+}
+
+ORGANS.forEach(function (o) {
+  var card = document.createElement("button");
+  card.type = "button";
+  card.className = "card";
+  card.setAttribute("data-id", o.id);
+  card.setAttribute("data-name", (o.name + " " + o.tip).toLowerCase());
+  card.innerHTML = '<span class="emoji">' + o.emoji + '</span><span class="name">' + o.name + '</span><span class="tip">' + o.tip + '</span>';
+  card.addEventListener("click", function () {
+    document.getElementById("organ-" + o.id).scrollIntoView({ behavior: "smooth" });
+  });
+  grid.appendChild(card);
+
+  var sec = document.createElement("section");
+  sec.className = "organ";
+  sec.id = "organ-" + o.id;
+  sec.setAttribute("data-id", o.id);
+  sec.setAttribute("data-name", (o.name + " " + o.tip).toLowerCase());
+  sec.innerHTML = "<h2>" + o.emoji + " " + o.name + "</h2>" +
+    blockHTML("do", "✅ Do this", o.do) +
+    blockHTML("eat", "🥗 Eat this", o.eat) +
+    blockHTML("avoid", "🚫 Avoid this", o.avoid) +
+    blockHTML("watch", "⚠️ Watch out for", o.watch) +
+    '<a class="back" href="#top">↑ Back to all organs</a>';
+  sectionsEl.appendChild(sec);
+});
+
+document.getElementById("search").addEventListener("input", function (e) {
+  var q = e.target.value.trim().toLowerCase();
+  var shown = 0;
+  document.querySelectorAll("[data-id]").forEach(function (el) {
+    var match = !q || el.getAttribute("data-name").indexOf(q) !== -1;
+    el.style.display = match ? "" : "none";
+    if (match && el.classList.contains("card")) shown++;
+  });
+  emptyEl.style.display = shown === 0 ? "block" : "none";
+});
+</script>
+</body>
+</html>
