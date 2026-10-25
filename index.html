@@ -542,7 +542,7 @@ var ORGANS_HI = [
     eat: ["Karela, methi, whole grains aur fibre wala khana."],
     avoid: ["Roz sugary drinks aur meetha.", "Raat ko der se bhaari khana aur lagatar snacking."],
     watch: ["Zyada pyaas, baar-baar urine, ya bina wajah wazan kam hona — sugar test karvao."] },
-  { id: "gallbladder", emoji: "🟡", name: "Gallbladder", tip: "Regular meals, moderate fat.",
+  { id: "gallbladder", emoji: "🟡", name: "Gallbladder", tip: "Regular meals khao, moderate fat.",
     do: ["Regular meals khao — bahut lambe time tak khana skip mat karo.", "Agar wazan kam karna hai to dheere karo, crash diet se kabhi nahi."],
     eat: ["Halka khana, fibre aur kadvi hari sabziyan.", "Moderate healthy fats, ek saath bade fried meals nahi."],
     avoid: ["Ek saath bahut fatty, fried meals.", "Crash diet aur tezi se wazan kam karna."],
@@ -1177,6 +1177,7 @@ function setLang(next) {
   try { localStorage.setItem("ayurLang", LANG); } catch (e) {}
   applyStaticLang();
   renderOrgans();
+  document.getElementById("search").value = "";
   applySearch();
   renderQuiz();
   quizSel.forEach(function (v, i) {
