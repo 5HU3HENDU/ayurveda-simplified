@@ -16,6 +16,8 @@
   header { text-align: center; padding: 12px 8px 8px; }
   header h1 { font-family: Georgia, serif; font-size: 40px; line-height: 1.15; }
   header p { margin-top: 10px; font-size: 17px; color: #5c6653; max-width: 620px; margin-left: auto; margin-right: auto; }
+  .topbar { text-align: right; }
+  .topbar button { border: 1px solid #d8d2c2; background: #fffdf8; border-radius: 999px; padding: 8px 16px; font-size: 14px; font-family: inherit; cursor: pointer; color: #22271f; }
   .notice {
     margin: 22px 0 8px;
     background: #fff8dd;
@@ -132,18 +134,19 @@
 </head>
 <body>
 <div class="wrap" id="top">
+  <div class="topbar"><button type="button" id="langBtn">🌐 Hinglish</button></div>
   <header>
     <h1>🌿 Ayurveda, Simply</h1>
-    <p>What Ayurveda suggests for keeping every part of your body healthy — in plain words, no complicated terms, no jargon.</p>
+    <p id="tagline">What Ayurveda suggests for keeping every part of your body healthy — in plain words, no complicated terms, no jargon.</p>
   </header>
 
-  <div class="notice">
+  <div class="notice" id="notice">
     <strong>Please read:</strong> this is general wellness information from Ayurvedic tradition, not medical advice. If you have a health problem, are pregnant, or take medicines, talk to a qualified doctor or Ayurvedic practitioner first — herbs can interact with medicines.
   </div>
 
   <div class="basics">
-    <h2>🌞 5 daily basics that help everything</h2>
-    <ul>
+    <h2 id="basics-title">🌞 5 daily basics that help everything</h2>
+    <ul id="basics-list">
       <li><strong>Sleep on time</strong> — aim to sleep before 10 pm and wake up early.</li>
       <li><strong>Eat warm, freshly cooked food</strong> at roughly the same times every day.</li>
       <li><strong>Move every day</strong> — a 30-minute walk is enough.</li>
@@ -169,23 +172,23 @@
   <div id="sections"></div>
 </div>
   <div class="panel" id="panel-quiz" style="display:none">
-    <h2>❓ What's your type?</h2>
-    <p class="sub">Ayurveda says every person has a dominant body type, and the best care depends on it. Answer honestly — there are no right or wrong answers. Age and gender are optional and only used to personalise your routine; everything is saved only on your phone.</p>
+    <h2 id="quiz-title">❓ What's your type?</h2>
+    <p class="sub" id="quiz-sub">Ayurveda says every person has a dominant body type, and the best care depends on it. Answer honestly — there are no right or wrong answers. Age and gender are optional and only used to personalise your routine; everything is saved only on your phone.</p>
     <div id="quiz-box"></div>
   </div>
   <div class="panel" id="panel-routine" style="display:none">
-    <h2>📅 Your 4-week routine</h2>
-    <p class="sub">Everyday habits first, then one special task on some days. Blank days are rest days — that is on purpose. Durations are rough ranges. Tick things off as you do them; your ticks are saved on your phone.</p>
+    <h2 id="routine-title">📅 Your 4-week routine</h2>
+    <p class="sub" id="routine-sub">Everyday habits first, then one special task on some days. Blank days are rest days — that is on purpose. Durations are rough ranges. Tick things off as you do them; your ticks are saved on your phone.</p>
     <div id="routine-box"></div>
   </div>
   <div class="panel" id="panel-buy" style="display:none">
-    <h2>🛒 Things to buy</h2>
-    <p class="sub">Everything mentioned across the organ sections, grouped for shopping. No brands, no prices — buy whatever good-quality version you find. Tick items off as you buy them.</p>
+    <h2 id="buy-title">🛒 Things to buy</h2>
+    <p class="sub" id="buy-sub">Everything mentioned across the organ sections, grouped for shopping. No brands, no prices — buy whatever good-quality version you find. Tick items off as you buy them.</p>
     <div id="buy-box"></div>
   </div>
 
 
-  <footer>
+  <footer id="footer-text">
     Made with the idea that ancient wisdom should be easy to understand.<br>
     General information only — not a replacement for medical care.
   </footer>
@@ -392,6 +395,410 @@ var ORGANS = [
 
 ];
 
+/* ---------- Hinglish dataset (same ids, order and shape as ORGANS) ---------- */
+var ORGANS_HI = [
+  { id: "brain", emoji: "🧠", name: "Brain aur Mann", tip: "Raat 10 baje se pehle so jao, roz mann ko shaant karo.",
+    do: ["Raat 10 baje se pehle so jao aur subah jaldi utho — dimaag raat ko recover karta hai.", "Roz 10 minute dhyaan ya shaanti se baitho.", "Hafte mein ek-do baar sar mein garam tel ki maalish karo."],
+    eat: ["Akhrot, thoda ghee, aur raat ko garam doodh.", "Brahmi yaad aur shaanti ke liye paramparik jadi-booti hai — sirf expert ki salah se."],
+    avoid: ["Raat ko der tak screen aur bahut der se sona.", "Ek saath kai kaam, tez awaaz aur zyada stimulation.", "Khana skip karna aur kai din kam sona."],
+    watch: ["Hafte tak udaasi, chinta ya bhoolne ki aadat — doctor se baat karo, khud diagnose mat karo."] },
+  { id: "eyes", emoji: "👀", name: "Aankhein", tip: "Baar-baar palkein jhapkao, aaram do, hari sabziyan khao.",
+    do: ["Jaanboojh kar palkein jhapkao aur har 20 minute mein screen se nazar hatao.", "Hatheliyan ragad kar garam karo aur band aankhon par halke se rakho.", "Pairon ke talvon mein tel ki maalish karo — parampara isse aankhon se jodti hai."],
+    eat: ["Amla, gaajar, hari patte wali sabziyan aur thoda ghee.", "Subah Triphala paani se aankhein dhona paramparik tareeka hai."],
+    avoid: ["Andhere kamre mein lambe time tak screen.", "Aankhein zor se malna aur bina palak jhapkaye ghoorna.", "Bahut tez roshni aur dhool-dhuaan bina bachav ke."],
+    watch: ["Aankh mein dard, na jaane wali laali, ya nazar mein badlav — turant eye doctor ko dikhao."] },
+  { id: "ears", emoji: "👂", name: "Kaan", tip: "Thoda garam tel, awaaz dheemi.",
+    do: ["Kabhi-kabhi har kaan mein 2–3 boond halka garam til ka tel daalo (paramparik tareeka).", "Nahaane ya tairne ke baad kaan sukhe rakho.", "Tel maalish ke dauraan kaanon ke aas-paas halke se maalish karo."],
+    eat: ["Garam, taaza bana khana; paani kaafi piyo."],
+    avoid: ["Bahut tez music aur full volume par earphone.", "Kaan mein earbud ya koi cheez andar tak daalna.", "Kaan mein seedhi thandi hawa."],
+    watch: ["Kaan bajna, dard, paani aana ya sunna kam hona — check karvao, ignore mat karo."] },
+  { id: "nose", emoji: "👃", name: "Naak aur Sinuses", tip: "Tel ki boondein raasta saaf rakhti hain.",
+    do: ["Subah har nostril mein garam til ya medicated tel ki 2 boondein daalo (paramparik tareeka).", "Band naak ho to saadhe garam paani ki bhaap lo.", "Aas-paas dhool se bachao."],
+    eat: ["Shahad wali adrak chai, garam soup aur kali mirch jaise masale."],
+    avoid: ["Dhool, dhuaan aur tez chemical khushboo.", "Sardi mein bahut thande drinks aur ice cream.", "Naak bahut zor se saaf karna."],
+    watch: ["Hafte tak band naak, naak se khoon, ya smell ka chale jaana — doctor ko dikhao."] },
+  { id: "mouth", emoji: "🦷", name: "Munh, Daant aur Masude", tip: "Roz subah oil swish + tongue scrape.",
+    do: ["Ek chammach til ya nariyal tel munh mein kuch minute ghumao, phir thook do (oil pulling).", "Roz subah jeebh halke se saaf karo.", "Din mein do baar brush karo aur saaf ungli se masudon ki maalish karo."],
+    eat: ["Kurkurre sabziyan, til, aur calcium wale khane.", "Neem munh ki sehat ke liye paramparik roop se achha maana jaata hai."],
+    avoid: ["Zyada meetha, chipchipe toffee aur tambaku.", "Bahut khatta khana aur bahut sakht cheezein kaatna.", "Raat ko brush skip karna."],
+    watch: ["Masudon se khoon, na bharne wale munh ke chhale, ya lagatar badboo — dentist ko dikhao."] },
+  { id: "throat", emoji: "🗣️", name: "Gala aur Awaaz", tip: "Garam drinks, awaaz dheemi.",
+    do: ["Gala kharab lage to garam namak paani se garare karo.", "Din bhar garam paani piyo.", "Awaaz thaki lage to aaram do."],
+    eat: ["Shahad ke saath adrak, garam soup aur herbal chai."],
+    avoid: ["Lambe time tak chillana aur gala baithne par fusfusana.", "Bahut thande drinks, smoking aur polluted hawa.", "Thandi, sukhi hawa mein zor se bolna."],
+    watch: ["2 hafte se zyada gala baitha rehna, ya nigalne mein dikkat — doctor ko dikhao."] },
+  { id: "skin", emoji: "✨", name: "Twacha (Skin)", tip: "Roz tel maalish sabse bada kaam hai.",
+    do: ["Nahaane se pehle poore shareer par garam tel ki maalish karo — twacha ke liye ye sabse recommended kaam hai.", "Gungune paani se nahao, bahut garam se nahi.", "Tez dhoop se bachao."],
+    eat: ["Haldi, neem, aloe vera, hari sabziyan aur kaafi paani.", "Twacha irritated ho to taaza phal aur halka, kam mirch wala khana."],
+    avoid: ["Sakht sabun, tez chemical cream aur zyada ragadna.", "Zyada dhoop, bahut garam paani aur zyada teekha-tala khana.", "Rashes khujana aur pimples ko nochna."],
+    watch: ["Til ka shape ya rang badalna, na bharne wale ghaav, ya failte rashes — doctor ko dikhao."] },
+  { id: "hair", emoji: "💇", name: "Baal aur Scalp", tip: "Tel, halki dhulai, kam heat.",
+    do: ["Hafte mein ek-do baar garam tel (amla ya bhringraj tel paramparik choice hai) se scalp ki maalish karo.", "Halke se dho aur jab ho sake naturally sukhne do.", "Dheere se kanghi karo — uljhe baal zor se mat kheecho."],
+    eat: ["Protein (dal, ande, paneer), iron wali hari sabziyan, til aur amla."],
+    avoid: ["Sakht chemical treatment, roz heat styling aur bahut garam paani.", "Tight hairstyles jo scalp kheenche.", "Stress aur kharab neend — baalon mein sabse pehle dikhta hai."],
+    watch: ["Achanak patch mein baal jhadna ya khujli wali, khushk scalp jo theek na ho — check karvao."] },
+  { id: "heart", emoji: "❤️", name: "Dil (Heart)", tip: "Roz walk, stress kam.",
+    do: ["Zyadatar din 30 minute tez walk karo.", "Dheemi saans lo aur stress control mein rakho — dil aur mann jude hain.", "Achhi neend lo aur routine regular rakho."],
+    eat: ["Lehsun, hari sabziyan, akhrot, oats aur moderate healthy fats.", "Arjuna chhaal Ayurveda ki sabse jaani-maani heart jadi-booti hai — sirf expert ki dekhrekh mein."],
+    avoid: ["Zyada namak, tala hua khana aur processed snacks.", "Smoking aur alcohol.", "Chronic stress, gussa aur kam neend."],
+    watch: ["Seene mein dard, pressure, ya saans phoolna — urgent samjho aur turant medical help lo."] },
+  { id: "lungs", emoji: "🫁", name: "Phephde aur Saans", tip: "Gehri saans lo, dhuein se bacho.",
+    do: ["Roz 10 minute gehri saans lo.", "Band naak ho to bhaap lo.", "Taazi hawa mein time bitao."],
+    eat: ["Garam paani mein tulsi, adrak aur shahad.", "Garam soup aur halka, garam khana."],
+    avoid: ["Kisi bhi tarah ka dhuaan, dhool aur polluted hawa.", "Khansi ho to bahut thandi hawa aur thande drinks.", "Hafte tak khansi dabaye rakhna bina check karaye."],
+    watch: ["Lagatar khansi, seeti wali saans, ya khoon wali khansi — jaldi doctor ko dikhao."] },
+  { id: "liver", emoji: "🫀", name: "Liver", tip: "Halka khana, alcohol overload nahi.",
+    do: ["Fixed time par khao aur ek meal mein overload mat karo.", "Portion moderate rakho aur achhi tarah chabao.", "Active raho — movement liver ko bhi madad karta hai."],
+    eat: ["Kadvi hari sabziyan, haldi, amla aur halka, aasani se pachne wala khana.", "Din bhar garam paani."],
+    avoid: ["Alcohol aur baar-baar tala, bhaari khana.", "Raat ko der se overeating.", "Bina salah ke faltu dawaiyan."],
+    watch: ["Peeli aankhein ya twacha, dark urine, ya lagatar thakaan — jaldi doctor ko dikhao."] },
+  { id: "stomach", emoji: "🍲", name: "Pet aur Pachan (Digestion)", tip: "Garam khana, fixed time, achhi tarah chabao.",
+    do: ["Roz lagbhag ek hi time par garam, taaza bana khana khao.", "Dheere chabao aur pet full hone tak nahi, aaram se khao.", "Garam paani piyo; khane ke baad thodi walk madad karti hai."],
+    eat: ["Adrak, jeera, saunf aur chhaas.", "Pachan kamzor lage to khichdi aur soup."],
+    avoid: ["Overeating, bahut jaldi khana, aur raat ko der se bhaari khana.", "Khane ke saath ice-cold drinks aur zyada kachha, thanda khana.", "Processed khana aur baar-baar snacking."],
+    watch: ["Baar-baar acidity, pet dard, ulti ya ulti/stool mein khoon — doctor ko dikhao."] },
+  { id: "gut", emoji: "🌿", name: "Aantein aur Gut", tip: "Fibre, routine, roko mat.",
+    do: ["Toilet ka fixed routine rakho aur natural urges ko roko mat.", "Kaafi fibre khao aur paani piyo.", "Roz move karo — walk gut ko chalata rakhta hai."],
+    eat: ["Raat ko Triphala paramparik gentle regulator hai — sirf salah se.", "Chhaas, bhigi kishmish, phal aur sabziyan."],
+    avoid: ["Sukha, junk khana aur kam paani.", "Ghanton tak bowel urges rokna.", "Strong laxatives ka zyada use."],
+    watch: ["Stool mein khoon, achanak wazan kam hona, ya hafte tak bowel changes — doctor ko dikhao."] },
+  { id: "kidneys", emoji: "💧", name: "Kidney aur Urine", tip: "Paani piyo, urine roko mat.",
+    do: ["Din bhar paani piyo — bahut pyaas lagne ka wait mat karo.", "Jab lage tab urine pass karo; ghanton roko mat.", "Regular checkups se BP aur sugar control mein rakho."],
+    eat: ["Dhaniya paani, halka khana aur kaafi fluids.", "Namak dheere-dheere kam karo, achanak nahi."],
+    avoid: ["Zyada namak aur processed khana.", "Bina medical salah ke painkillers ka zyada use.", "Urine rokna aur kam paani peena."],
+    watch: ["Urine karte waqt jalan, urine mein khoon, pair/chehre par sujan — doctor ko dikhao."] },
+  { id: "bones", emoji: "🦴", name: "Haddiyan aur Joints", tip: "Tel maalish + calcium wale khane.",
+    do: ["Joints par niyamit garam til tel ki maalish karo.", "Vitamin D ke liye dhoop lo aur roz joints halke se move karo.", "Walk jaise weight-bearing activity karo."],
+    eat: ["Til, ragi, doodh, paneer aur hari sabziyan.", "Thoda ghee joints ke liye paramparik roop se achha maana jaata hai."],
+    avoid: ["Joints dard karein to zyada sukha, thanda aur halka khana.", "Achanak jhatke wale movements aur overexertion.", "Ek hi position mein bahut ghanton baithna."],
+    watch: ["Suje, garam ya tedhe joints, ya dard jo badhta jaaye — check karvao."] },
+  { id: "muscles", emoji: "💪", name: "Muscles", tip: "Warm up, aaram, protein.",
+    do: ["Exercise se pehle warm up karo aur baad mein stretch karo.", "Dukhti muscles par garam tel ki maalish karo.", "Heavy workout ke beech aaram karo — muscles aaram mein banti hain."],
+    eat: ["Kaafi protein (dal, doodh, ande, nuts) aur garam, poshtik khana."],
+    avoid: ["Bina warm up ke achanak bhaari uthana.", "Paseene ke turant baad thand lagna.", "Tez dard ke saath exercise karna."],
+    watch: ["Muscle kamzori, ya dard jo kuch din mein theek na ho — doctor ko dikhao."] },
+  { id: "feet", emoji: "🦶", name: "Pair (Feet)", tip: "Sone se pehle tel maalish.",
+    do: ["Sone se pehle pairon mein garam tel ki maalish karo — ye neend aur aankhon ko bhi madad karta hai, paramparik roop se.", "Pair saaf, sukhe aur moisturised rakho.", "Aaramdayak footwear pehno."],
+    eat: ["Balanced diet; khaas kuch nahi — pairon ko zyadatar bahar se dekhbhaal chahiye."],
+    avoid: ["Rough ya bahut thandi zameen par nange pair chalna.", "Tight shoes aur ghanton tak geele socks."],
+    watch: ["Na bharne wale cracks, sunn hona, ya pairon par ghaav (khaas kar diabetes mein) — doctor ko dikhao."] },
+  { id: "immunity", emoji: "🛡️", name: "Body ki Defence (Immunity)", tip: "Neend + routine quick fix se behtar hai.",
+    do: ["Achhi neend lo, time par khao aur steady daily routine rakho.", "Bahar time bitao aur stress manage karo.", "Chyawanprash aur amla paramparik daily supporters hain — pehle expert se pooch lo."],
+    eat: ["Amla, haldi doodh, adrak, tulsi aur seasonal phal."],
+    avoid: ["Gadbad neend, zyada meetha aur junk khana.", "Bina zaroorat ya salah ke antibiotics ya supplements."],
+    watch: ["Bahut baar beemar padna, ya ghaav ka bahut dheere bharna — proper checkup karvao."] },
+  { id: "reproductive", emoji: "🌸", name: "Reproductive Health", tip: "Neend, shaanti, poshtik khana.",
+    do: ["Achhi neend lo aur stress kam rakho — dono seedha reproductive health par asar karte hain.", "Moderate exercise karo aur regular routine rakho."],
+    eat: ["Doodh, nuts, khajoor aur thoda ghee.", "Ashwagandha aur shatavari iske paramparik herbs hain — sirf expert ki salah se."],
+    avoid: ["Zyada garmi, alcohol, smoking aur chronic stress.", "Crash diet aur overexertion."],
+    watch: ["Lagatar problem ya dard — khud treat karne ke bajaye doctor se baat karo."] },
+  { id: "tongue", emoji: "👅", name: "Jeebh (Tongue)", tip: "Roz subah scrape karo — ye pachan batati hai.",
+    do: ["Roz subah khane se pehle jeebh halke se scrape karo.", "Scrape karne ke baad garam paani se munh dholo.", "Coating par dhyaan do — moti safed coating aksar matlab pachan slow hai."],
+    eat: ["Subah sabse pehle garam paani.", "Coating moti ho to adrak chai aur halka, garam khana."],
+    avoid: ["Itni zor se scrape karna ki khoon nikal aaye.", "Hafte tak moti coating ignore karna bina khana aur neend sudhare."],
+    watch: ["Na bharne wale chhale, ya rang ka change jo rahe — doctor ya dentist ko dikhao."] },
+  { id: "face", emoji: "🪞", name: "Chehra (Face)", tip: "Halki dhulai, halka tel, achhi neend.",
+    do: ["Gungune paani se dho, garam se nahi.", "Kuch minute ke liye chehre par halke tel ki kuch boondein maalish karo, phir dho lo.", "Achhi neend lo — kharab neend chehre par sabse pehle dikhti hai."],
+    eat: ["Phal, kaafi paani aur halka khana.", "Khane mein haldi glow ke liye paramparik roop se achhi maani jaati hai."],
+    avoid: ["Sakht scrubs, tez chemical cream aur zyada dhona.", "Pimples nochna aur makeup ke saath sona.", "Bina protection ke zyada dhoop."],
+    watch: ["Failte rashes, sujan, ya na bharne wale ghaav — doctor ko dikhao."] },
+  { id: "neckback", emoji: "🧍", name: "Gardan aur Peeth (Neck & Back)", tip: "Posture + roz halki movement.",
+    do: ["Seedha baitho aur subah-shaam gardan aur peeth stretch karo.", "Hafte mein ek baar peeth aur gardan par garam tel ki maalish karo.", "Supportive pillow par so, bahut unche par nahi."],
+    eat: ["Calcium wale khane — til, ragi, doodh — aur garam, poshtik khana."],
+    avoid: ["Ghanton tak phone par jhukna (phone-neck).", "Kamar jhuka kar bhaari cheezein uthana.", "Paseene wali peeth par thandi hawa."],
+    watch: ["Haath ya pairon mein sunn hona ya kamzori, ya chot ke baad dard — doctor ko dikhao."] },
+  { id: "shoulders", emoji: "🙌", name: "Kandhe aur Baahen (Shoulders & Arms)", tip: "Ghumaao, jhuko mat.",
+    do: ["Roz kandhe ghumao aur baahen circle mein ghumao.", "Kandhe tight lagein to garam tel se maalish karo.", "Kandhe relaxed aur neeche rakho, kaano tak upar nahi."],
+    eat: ["Protein wale khane, til aur garam, poshtik meals."],
+    avoid: ["Roz ek hi side par bhaari bag uthana.", "Ghanton tak phone ya laptop par jhukna."],
+    watch: ["Kandhe ka dard jo movement rok de, ya girne ke baad dard — doctor ya physio ko dikhao."] },
+  { id: "hands", emoji: "✋", name: "Haath aur Ungliyan (Hands & Fingers)", tip: "Stretch karo, tel lagao, aaram do.",
+    do: ["Din mein kuch baar ungliyan stretch karo, phailao, phir squeeze karke chhodo.", "Haathon par garam tel ki maalish karo.", "Nakhun saaf aur trimmed rakho."],
+    eat: ["Protein, nuts aur calcium wale khane."],
+    avoid: ["Bina break ke ghanton tak grip ya typing.", "Heat ya exertion ke turant baad haathon par bahut thanda paani."],
+    watch: ["Ungliyon mein sunn hona ya jhanjhanahat, ya sujan jo rahe — doctor ko dikhao."] },
+  { id: "nails", emoji: "💅", name: "Nakhun (Nails)", tip: "Trim karo, saaf rakho, cuticles par tel.",
+    do: ["Nakhun niyamit trim karo aur saaf-sukhe rakho.", "Cuticles mein tel ki ek boond ragdo.", "Ek hi direction mein halke se file karo."],
+    eat: ["Protein, iron wali hari sabziyan, til, ande aur nuts."],
+    avoid: ["Nakhun chabana.", "Roz sakht nail remover.", "Nakhun lambe aur gande rakhna."],
+    watch: ["Nakhun kaala padna, uthna, ya nakhun ke aas-paas dard wali sujan — doctor ko dikhao."] },
+  { id: "legs", emoji: "🦵", name: "Taangein aur Ghutne (Legs & Knees)", tip: "Walk, stretch, ghutnon par tel.",
+    do: ["Roz walk karo aur halke knee bends karo.", "Ghutnon par garam til tel ki maalish karo.", "Walk ke baad calves aur thighs stretch karo."],
+    eat: ["Calcium wale khane — til, ragi, doodh — aur kaafi protein."],
+    avoid: ["Bahut ghanton tak cross-legged baithna.", "Bhaari wazan ke saath achanak deep squats.", "Ghutne ke dard ko badhne tak ignore karna."],
+    watch: ["Ghutne mein sujan, locking, ya dard jo badhta jaaye — doctor ko dikhao."] },
+  { id: "ankles", emoji: "👣", name: "Takhnay aur Ediyan (Ankles & Heels)", tip: "Garam tel + aaramdayak shoes.",
+    do: ["Roz takhnon ko circle mein ghumao.", "Ediyon aur takhnon par garam tel ki maalish karo.", "Cushioned, aaramdayak footwear pehno."],
+    eat: ["Calcium wala khana aur garam, poshtik meals."],
+    avoid: ["Roz high heels.", "Flat, sakht shoes mein lambi walk."],
+    watch: ["Takhnon ki sujan jo rahe, ya har subah heel dard — doctor ko dikhao."] },
+  { id: "blood", emoji: "🩸", name: "Khoon aur Circulation", tip: "Move karo, gehri saans lo, iron wale khane khao.",
+    do: ["Roz walk karo aur gehri saans lo.", "Thande mausam mein haath-pair garam rakho.", "Lambe time tak baithe raho to beech-beech mein move karo."],
+    eat: ["Iron wali hari sabziyan, khajoor, chukandar aur anaar.", "Vitamin C wale khane (amla, citrus) iron absorb karne mein madad karte hain."],
+    avoid: ["Smoking.", "Bahut lambe time tak bilkul still baithna.", "Zyada namkeen, processed khana."],
+    watch: ["Lagatar thakaan, pale skin ya chakkar — khoon ki jaanch karvao."] },
+  { id: "pancreas", emoji: "⚖️", name: "Pancreas aur Blood Sugar", tip: "Fixed meal time, kam meetha.",
+    do: ["Fixed time par khao aur khane ke baad walk karo.", "Wazan steady rakho aur time par so."],
+    eat: ["Karela, methi, whole grains aur fibre wala khana."],
+    avoid: ["Roz sugary drinks aur meetha.", "Raat ko der se bhaari khana aur lagatar snacking."],
+    watch: ["Zyada pyaas, baar-baar urine, ya bina wajah wazan kam hona — sugar test karvao."] },
+  { id: "gallbladder", emoji: "🟡", name: "Gallbladder", tip: "Regular meals, moderate fat.",
+    do: ["Regular meals khao — bahut lambe time tak khana skip mat karo.", "Agar wazan kam karna hai to dheere karo, crash diet se kabhi nahi."],
+    eat: ["Halka khana, fibre aur kadvi hari sabziyan.", "Moderate healthy fats, ek saath bade fried meals nahi."],
+    avoid: ["Ek saath bahut fatty, fried meals.", "Crash diet aur tezi se wazan kam karna."],
+    watch: ["Fatty khane ke baad pet ke upar-right mein tez dard, nausea ke saath — doctor ko dikhao."] },
+  { id: "spleen", emoji: "🟠", name: "Spleen", tip: "Garam, halka, regular khana.",
+    do: ["Garam, paka hua khana fixed time par khao.", "Jab thaka lage to proper aaram karo."],
+    eat: ["Halke grains, paki sabziyan aur adrak.", "Overeating se bacho — chhote, regular meals best hain."],
+    avoid: ["Bahut zyada thanda, kachha khana.", "Overeating aur bahut irregular meal time."],
+    watch: ["Left ribs ke neeche dard, baar-baar infection, ya lagatar thakaan — doctor ko dikhao."] },
+  { id: "bladder", emoji: "💦", name: "Bladder", tip: "Roko mat, hydrated raho.",
+    do: ["Jab lage tab urine pass karo — ghanton roko mat.", "Din bhar paani piyo.", "Us area ko saaf rakho."],
+    eat: ["Dhaniya paani, barley paani aur halka khana."],
+    avoid: ["Ghanton tak urine rokna.", "Zyada caffeine aur alcohol.", "Bladder irritated ho to bahut mirch wala khana."],
+    watch: ["Jalan, urine mein khoon, ya bahut baar jaane ki zaroorat — doctor ko dikhao."] },
+  { id: "thyroid", emoji: "🦋", name: "Thyroid aur Hormones", tip: "Routine, neend, regular checkups.",
+    do: ["Time par so aur steady routine rakho.", "Stress manage karo — ye hormones ko bhi disturb karta hai.", "Symptoms dikhein to thyroid check karvao."],
+    eat: ["Normal matra mein iodised namak, nuts aur seeds, aur balanced diet."],
+    avoid: ["Crash diet.", "Thakaan, wazan change ya mood change ko mahinon tak ignore karna."],
+    watch: ["Bina wajah wazan badhna ya kam hona, lagatar thakaan, baal jhadna, ya hamesha thanda ya garam lagna — test karvao."] },
+  { id: "breast", emoji: "🎀", name: "Breast Health", tip: "Monthly self-check — koi lump matlab doctor.",
+    do: ["Periods ke baad har mahine self-check karo.", "Aaramdayak, sahi fitting wali support pehno.", "Wazan steady rakho aur active raho."],
+    eat: ["Balanced diet, flaxseeds aur hari sabziyan."],
+    avoid: ["Lumps ya changes ignore karna.", "Smoking aur alcohol."],
+    watch: ["Koi naya lump, nipple discharge, ya breast ki skin mein change — turant doctor ko dikhao, wait mat karo."] },
+  { id: "periods", emoji: "🌙", name: "Periods aur Menstrual Health", tip: "Aaram, garmi, iron wale khane.",
+    do: ["Heavy days par aaram karo aur halke se move karo.", "Garam khana khao aur cycle ki dates track karo."],
+    eat: ["Iron wala khana — hari sabziyan, khajoor, gud — plus garam soup aur til."],
+    avoid: ["Period days par bahut thanda khana aur drinks (paramparik salah).", "Heavy days par overexertion aur aaram skip karna."],
+    watch: ["Bahut zyada bleeding, tez dard, ya baar-baar missed periods — doctor ko dikhao."] },
+  { id: "prostate", emoji: "🧔", name: "Prostate (Men 40+)", tip: "40 ke baad check karvao.",
+    do: ["40 ki umar ke baad prostate checkups karvao.", "Urine poori tarah pass karo aur active raho."],
+    eat: ["Tamatar, pumpkin seeds, zinc wale khane aur balanced diet."],
+    avoid: ["Ghanton tak urine rokna.", "Irritated ho to zyada alcohol aur bahut mirch wala khana."],
+    watch: ["Kamzor urine flow, raat mein baar-baar urine ke liye uthna, ya urine mein khoon — doctor ko dikhao."] },
+  { id: "piles", emoji: "🪑", name: "Piles aur Bottom Care", tip: "Fibre, paani, zor mat lagao.",
+    do: ["Fibre khao aur kaafi paani piyo.", "Toilet par lambe time tak mat baitho.", "Paani se halke se dho."],
+    eat: ["Phal, sabziyan, chhaas aur bhigi kishmish."],
+    avoid: ["Zor se strain karna.", "Bina hile ghanton tak baithna.", "Bahut mirch wala, sukha khana aur kam paani."],
+    watch: ["Bleeding, tez dard, ya lump jo wapas na jaaye — doctor ko dikhao."] },
+  { id: "appendix", emoji: "❔", name: "Appendix", tip: "Placeholder — guidance jald aayegi.",
+    do: ["Ye section abhi placeholder hai — yahan asli guidance baad mein add karenge.", "Tab tak, upar wale 5 daily basics sab par lagu hote hain."],
+    eat: [],
+    avoid: [],
+    watch: ["Pet ke neeche-right mein achanak tez dard, bukhaar ya ulti ke saath — turant hospital jao, ye appendicitis ho sakta hai."] },
+  { id: "tonsils", emoji: "🎙️", name: "Tonsils", tip: "Pehli kharash par namak garare.",
+    do: ["Gale mein kharash ke pehle sign par garam namak paani se garare karo.", "Garam fluids piyo aur awaaz ko aaram do."],
+    eat: ["Shahad ke saath adrak aur garam soup."],
+    avoid: ["Gala dukh raha ho to bahut thande drinks aur ice cream.", "Gala pehle se dukh raha ho to chillana."],
+    watch: ["Tonsils baar-baar bukhaar ke saath soojna, ya saans lene ya nigalne mein dikkat — doctor ko dikhao."] }
+];
+
+var TYPES_HI = {
+  v: { sk: "Vata", plain: "Halka aur Phurtile", desc: "Tum halke, tez aur ideas se bhare ho — lekin tumhe jaldi thand lagti hai, dryness aur chinta hoti hai, aur energy bursts mein aati hai.",
+    tweaks: ["Garam, oily, taaza bana khana prefer karo; zyada thanda, sukha, kachha khana avoid karo.", "Fixed meal aur sleep time rakho — routine tumhara sabse achha dost hai.", "Extra garam tel maalish, aur thande, hawa wale mausam mein khud ko garam rakho."] },
+  p: { sk: "Pitta", plain: "Garam aur Tez", desc: "Tum tez, driven aur strong-willed ho — lekin tum garam rehte ho, jaldi irritate ho jaate ho, aur tumhara pachan strong hai.",
+    tweaks: ["Cooling khana prefer karo; bahut mirch wala, khatta aur tala khana kam karo.", "Tez dopahar ki dhoop se bacho aur meals skip mat karo — bhookh tumhe irritable banati hai.", "Cooling activities madad karti hain: shaam ki walk, shaant saans, kaafi neend."] },
+  k: { sk: "Kapha", plain: "Steady aur Bhari", desc: "Tum steady, shaant aur strong ho — lekin wazan aasani se badhta hai, subah bhari aur slow mehsoos hota hai, aur comfort pasand hai.",
+    tweaks: ["Halka, garam, masaledar khana prefer karo; bhaari, oily, meetha khana kam karo.", "Roz move karo aur subah jaldi utho — movement tumhari dawai hai.", "Din mein lambi neend aur bahut der se bhaari dinner avoid karo."] }
+};
+var QUIZ_Q_HI = [
+  { q: "Tumhara body frame zyadatar…", opts: [["Halka aur patla; wazan badhana mushkil hai", "v"], ["Medium aur balanced", "p"], ["Solid aur sturdy; wazan badhana aasan hai", "k"]] },
+  { q: "Tumhari skin aam taur par…", opts: [["Dry, patli aur thandi", "v"], ["Sensitive, garam, kabhi reddish", "p"], ["Smooth, thandi aur halki oily", "k"]] },
+  { q: "Tumhari bhookh…", opts: [["Irregular — kabhi meals bhool jaate ho", "v"], ["Tez — bahut bhookh lagti hai aur irritable ho jaate ho", "p"], ["Steady — ek meal skip kar sakte ho bina dikkat ke", "k"]] },
+  { q: "Tumhara pachan…", opts: [["Gas, bloating, irregular", "v"], ["Strong, lekin acidity pareshan karti hai", "p"], ["Slow — khane ke baad bhari mehsoos hota hai", "k"]] },
+  { q: "Tumhari neend…", opts: [["Halki; neend aana mushkil hai", "v"], ["Moderate; garam mehsoos karke uth sakte ho", "p"], ["Gehri aur lambi; uthna mushkil hai", "k"]] },
+  { q: "Kaunsa mausam sabse napasand hai…", opts: [["Thanda aur hawa wala", "v"], ["Garam aur dhoop wala", "p"], ["Thanda aur damp", "k"]] },
+  { q: "Din bhar tumhari energy…", opts: [["Bursts mein energy, phir thakaan", "v"], ["Intense aur driven", "p"], ["Steady, lekin shuru hone mein slow", "k"]] },
+  { q: "Stress mein tum zyadatar…", opts: [["Chinta aur worry", "v"], ["Irritated aur critical", "p"], ["Shaant aur withdrawn", "k"]] },
+  { q: "Tum bolte aur chalte…", opts: [["Tez aur quick", "v"], ["Tez aur precise", "p"], ["Slow aur shaant", "k"]] },
+  { q: "Seekhna tumhare liye…", opts: [["Jaldi seekhna, jaldi bhoolna", "v"], ["Achha seekhna, achhi memory", "p"], ["Slow seekhna, lekin kabhi bhoolna nahi", "k"]] }
+];
+var EVERYDAY_HI = [
+  { group: "Subah", tasks: [
+    ["Jeebh scrape karna", "1-2 min"],
+    ["Brush karna (subah aur raat)", "2-3 min each"],
+    ["Naak mein tel ki boondein - har nostril mein 2 boondein", "1-2 min"],
+    ["Gungune paani se chehra dhona", "2-3 min"],
+    ["Nahaane ke baad kaan sukhe rakhna", "1 min"],
+    ["Takhnon ki rotations", "2-3 min"],
+    ["Gardan aur peeth ki stretches", "5-10 min"]
+  ] },
+  { group: "Din bhar", tasks: [
+    ["Fixed time par garam, taaza bana khana; dheere chabao", "20-30 min per meal"],
+    ["Khane ke saath fibre wala khana", "khane ke saath"],
+    ["Din bhar paani piyo; garam paani sip karo", "din bhar"],
+    ["Natural urges ko roko mat", "all day"],
+    ["Screen days par har 20 min mein eye breaks - nazar hatao", "har 20 min mein kuch seconds"],
+    ["Din mein kuch baar haath aur ungliyon ki stretches", "2-3 min each"],
+    ["Kandhe relaxed rakho, jhukna avoid karo", "all day"],
+    ["Walk - 30 min tez, plus khane ke baad chhoti stroll", "30-45 min"],
+    ["Dhoop", "15-20 min"]
+  ] },
+  { group: "Shaam aur raat", tasks: [
+    ["Sone se pehle pairon ki tel maalish", "5-10 min"],
+    ["Dheemi saans + shaanti se baithna", "10-20 min"],
+    ["Raat ko der tak screens nahi; 10 baje se pehle so jao", "7-8 hrs sleep"]
+  ] }
+];
+var WEEKS_HI = [
+  { title: "Week 1 - Sar aur Senses", days: [
+    ["Somvaar", "Scalp ki tel maalish (amla ya bhringraj tel)", "15-30 min"],
+    ["Mangalvaar", "", ""],
+    ["Budhvaar", "Kaan mein tel ki boondein - har kaan mein 2-3 boond halka garam til tel", "2-3 min"],
+    ["Guruvaar", "", ""],
+    ["Shukravaar", "Chehre ki tel maalish", "5-10 min"],
+    ["Shanivaar", "Oil pulling - til ya nariyal tel ghumao", "5-10 min"],
+    ["Ravivaar", "", ""]
+  ] },
+  { title: "Week 2 - Body aur Movement", days: [
+    ["Somvaar", "Nahaane se pehle poore shareer ki garam tel maalish", "20-30 min"],
+    ["Mangalvaar", "", ""],
+    ["Budhvaar", "", ""],
+    ["Guruvaar", "Garam til tel se ghutnon ki maalish", "10-15 min"],
+    ["Shukravaar", "Nakhun - trim, saaf, cuticles par tel", "10-15 min"],
+    ["Shanivaar", "", ""],
+    ["Ravivaar", "", ""]
+  ] },
+  { title: "Week 3 - Andar ke Organs", days: [
+    ["Somvaar", "Pachan wale khane - adrak, jeera, saunf, chhaas; bhaari tala khana nahi", "with meals"],
+    ["Mangalvaar", "", ""],
+    ["Budhvaar", "Dhaniya ya barley paani", "5 min to prepare"],
+    ["Guruvaar", "Meals mein kadvi hari sabziyan + haldi", "with meals"],
+    ["Shukravaar", "", ""],
+    ["Shanivaar", "Checkups agar due hon - sugar, BP, thyroid", "30-60 min"],
+    ["Ravivaar", "Halke khane ka din - khichdi, soup", "meals"]
+  ] },
+  { title: "Week 4 - Poora Shareer aur Personal", days: [
+    ["Somvaar", "Immunity wale khane - amla, haldi doodh, tulsi", "with meals"],
+    ["Mangalvaar", "SELFCHECK", ""],
+    ["Budhvaar", "Poshtik khane - doodh, nuts, khajoor", "with meals"],
+    ["Guruvaar", "", ""],
+    ["Shukravaar", "", ""],
+    ["Shanivaar", "Masudon ki maalish + dental checkup agar due ho", "2-3 min"],
+    ["Ravivaar", "Mahine ka review - kya madad kiya? Wahi jaari rakho", "10-15 min"]
+  ] }
+];
+var AS_NEEDED_HI = [
+  "Namak paani ke garare - sirf jab gala kharab lage",
+  "Bhaap - sirf jab naak band ho",
+  "Period care (aaram, iron wala khana) - period days par, calendar day par nahi",
+  "Tonsil care - agar tonsils dukhein to garare karo aur awaaz ko aaram do"
+];
+var BUY_HI = [
+  { group: "Tel (Oils)", items: [
+    ["Til ka tel", "Tel maalish, kaan ki boondein, naak ki boondein, joints aur pairon ki maalish"],
+    ["Nariyal tel", "Munh ki sehat ke liye oil pulling"],
+    ["Amla tel", "Scalp aur baalon ki maalish"],
+    ["Bhringraj tel", "Scalp aur baalon ki maalish"]
+  ] },
+  { group: "Jadi-Bootiyan aur Powders", items: [
+    ["Triphala", "Aankh dhone ki parampara, gentle gut regulator (sirf salah se)"],
+    ["Brahmi", "Memory aur shaanti (sirf expert ki salah se)"],
+    ["Arjuna", "Heart jadi-booti (sirf expert ki dekhrekh mein)"],
+    ["Ashwagandha", "Reproductive health, taakat (sirf expert ki salah se)"],
+    ["Shatavari", "Reproductive health (sirf expert ki salah se)"],
+    ["Chyawanprash", "Roz immunity support (pehle expert se pooch lo)"],
+    ["Neem", "Munh aur twacha ki sehat"],
+    ["Haldi", "Twacha, immunity, liver"],
+    ["Tulsi", "Phephde, immunity, saans"],
+    ["Adrak", "Pachan, sardi, khansi"]
+  ] },
+  { group: "Kitchen Staples", items: [
+    ["Amla (taaza ya sukha)", "Aankhein, baal, immunity, liver"],
+    ["Ghee (thoda)", "Brain, joints, reproductive health"],
+    ["Shahad", "Gala, khansi, adrak ke saath"],
+    ["Til", "Haddiyan, joints, baal"],
+    ["Ragi", "Haddiyan aur calcium"],
+    ["Khajoor", "Iron, energy, periods care"],
+    ["Gud", "Iron, energy, paramparik meetha"],
+    ["Flaxseeds", "Breast health, balanced diet"],
+    ["Pumpkin seeds", "Prostate health, zinc"],
+    ["Chhaas", "Pachan, gut"],
+    ["Barley", "Bladder aur kidney ke liye paani"],
+    ["Dhaniya", "Bladder aur kidney ke liye paani"],
+    ["Namak", "Garam namak paani ke garare"]
+  ] },
+  { group: "Roz ke Items", items: [
+    ["Tongue scraper", "Subah jeebh saaf karna"]
+  ] }
+];
+var UI_EN = {
+  pageTitle: "Ayurveda, Simply — Keep Every Part Healthy",
+  tagline: "What Ayurveda suggests for keeping every part of your body healthy — in plain words, no complicated terms, no jargon.",
+  notice: "<strong>Please read:</strong> this is general wellness information from Ayurvedic tradition, not medical advice. If you have a health problem, are pregnant, or take medicines, talk to a qualified doctor or Ayurvedic practitioner first — herbs can interact with medicines.",
+  basicsTitle: "🌞 5 daily basics that help everything",
+  basics: [["Sleep on time", " — aim to sleep before 10 pm and wake up early."], ["Eat warm, freshly cooked food", " at roughly the same times every day."], ["Move every day", " — a 30-minute walk is enough."], ["Oil massage", " — a quick warm-oil massage before bath keeps skin, joints and sleep healthy."], ["Breathe", " — 10 minutes of slow, deep breathing calms the mind and the body."]],
+  tabs: { organs: "🌿 Organs", quiz: "❓ What's your type?", routine: "📅 Routine", buy: "🛒 Things to buy" },
+  searchPh: "Search a body part — try “eyes”, “heart”, “skin”…",
+  emptyText: "Nothing matches that — try another word like “eyes” or “heart”.",
+  quizTitle: "❓ What's your type?", quizSub: "Ayurveda says every person has a dominant body type, and the best care depends on it. Answer honestly — there are no right or wrong answers. Age and gender are optional and only used to personalise your routine; everything is saved only on your phone.",
+  routineTitle: "📅 Your 4-week routine", routineSub: "Everyday habits first, then one special task on some days. Blank days are rest days — that is on purpose. Durations are rough ranges. Tick things off as you do them; your ticks are saved on your phone.",
+  buyTitle: "🛒 Things to buy", buySub: "Everything mentioned across the organ sections, grouped for shopping. No brands, no prices — buy whatever good-quality version you find. Tick items off as you buy them.",
+  footer: "Made with the idea that ancient wisdom should be easy to understand.<br>General information only — not a replacement for medical care.",
+  do: "✅ Do this", eat: "🥗 Eat this", avoid: "🚫 Avoid this", watch: "⚠️ Watch out for",
+  back: "↑ Back to all organs",
+  yourType: "Your type: ", quizNote: "Your Routine tab is now personalised for this type.",
+  ageBand: "Age band: ", genderLabel: "Gender: ",
+  ageField: "Age band: ", genderField: "Gender: ",
+  ageVals: ["Under 18", "18–30", "31–50", "50+"], ageLabels: { "Under 18": "Under 18", "18–30": "18–30", "31–50": "31–50", "50+": "50+" },
+  genderVals: ["Female", "Male", "Prefer not to say"], genderLabels: { "Female": "Female", "Male": "Male", "Prefer not to say": "Prefer not to say" },
+  retake: "Retake the quiz", quizErr: "Please answer all 10 questions first.", seeType: "See my type",
+  personalPrefix: "Personalised for you: ", commonTitle: "Common routine for everyone",
+  commonText: "Take the quiz and this page will adjust to your body type - warming tips if you run cold, cooling tips if you run hot, and more movement if you run steady.",
+  note50: "50+ focus: give extra attention to bones & joints, and keep up regular checkups.",
+  noteU18: "Under 18: follow this with a parent's guidance, and use herbs only if an expert advises.",
+  everydayTitle: "For everyday", everydayNote: "These happen every day, so they never repeat in the weeks below.",
+  thisWeek: "This week (by date: week {n} of the month). Today is highlighted.",
+  rest: "Rest - no special task",
+  asNeededTitle: "As needed - not scheduled", asNeededNote: "These only apply when the situation comes up, so they are not given a fake day:",
+  resetTicks: "Reset all ticks", usedFor: "— used for: ",
+  selfFemale: "Breast self-check", selfMale: "Prostate checkup if due", selfOther: "Monthly self-check - breast self-check (women) / prostate checkup if due (men)"
+};
+var UI_HI = {
+  pageTitle: "Ayurveda, Simply — Har Part Ko Healthy Rakho",
+  tagline: "Ayurveda har part ko healthy rakhne ke liye kya suggest karta hai — seedhe shabdon mein, bina mushkil terms aur jargon ke.",
+  notice: "<strong>Please padho:</strong> ye Ayurvedic parampara se general wellness information hai, medical advice nahi. Agar tumhe koi health problem hai, tum pregnant ho, ya dawaiyan lete ho, to pehle kisi qualified doctor ya Ayurvedic practitioner se baat karo — jadi-bootiyan dawaiyon ke saath interact kar sakti hain.",
+  basicsTitle: "🌞 5 roz ke basics jo sab mein madad karte hain",
+  basics: [["Sahi time par so jao", " — 10 baje se pehle sone ki koshish karo aur subah jaldi utho."], ["Garam, taaza bana khana", " roz lagbhag ek hi time par khao."], ["Roz move karo", " — 30 minute ki walk kaafi hai."], ["Tel maalish", " — nahaane se pehle thodi garam tel maalish twacha, joints aur neend ko healthy rakhti hai."], ["Saans lo", " — 10 minute dheemi, gehri saans mann aur shareer dono ko shaant karti hai."]],
+  tabs: { organs: "🌿 Organs", quiz: "❓ Tumhara type kya hai?", routine: "📅 Routine", buy: "🛒 Kharidne wali cheezein" },
+  searchPh: "Body part dhoondo — jaise “aankhein”, “dil”, “twacha”…",
+  emptyText: "Kuch match nahi hua — koi aur word try karo jaise “aankhein” ya “dil”.",
+  quizTitle: "❓ Tumhara type kya hai?", quizSub: "Ayurveda kehta hai har insaan ka ek dominant body type hota hai, aur best care us par depend karti hai. Imaandari se jawab do — koi sahi ya galat jawab nahi hai. Age aur gender optional hain aur sirf tumhari routine personalise karne ke liye use hote hain; sab kuch sirf tumhare phone par save hota hai.",
+  routineTitle: "📅 Tumhara 4-hafte ka routine", routineSub: "Pehle roz ki aadatein, phir kuch dinon par ek khaas task. Khaali din rest days hain — ye jaanboojh kar hai. Durations rough ranges hain. Karte jaao to tick karo; tumhare ticks sirf tumhare phone par save hote hain.",
+  buyTitle: "🛒 Kharidne wali cheezein", buySub: "Organ sections mein mention ki gayi sab cheezein, shopping ke liye grouped. Koi brands nahi, koi prices nahi — jo achhi quality ka mile wahi lo. Kharidte jaao to tick karo.",
+  footer: "Is idea se bana hai ki ancient wisdom samajhna aasan hona chahiye.<br>General information only — medical care ka replacement nahi.",
+  do: "✅ Ye karo", eat: "🥗 Ye khao", avoid: "🚫 Ye avoid karo", watch: "⚠️ In par dhyaan do",
+  back: "↑ Saare organs par wapas",
+  yourType: "Tumhara type: ", quizNote: "Tumhara Routine tab ab is type ke liye personalised hai.",
+  ageBand: "Umar: ", genderLabel: "Gender: ",
+  ageField: "Umar: ", genderField: "Gender: ",
+  ageVals: ["Under 18", "18–30", "31–50", "50+"], ageLabels: { "Under 18": "18 se kam", "18–30": "18–30", "31–50": "31–50", "50+": "50+" },
+  genderVals: ["Female", "Male", "Prefer not to say"], genderLabels: { "Female": "Mahila", "Male": "Purush", "Prefer not to say": "Batana nahi chahte" },
+  retake: "Quiz dobara do", quizErr: "Pehle saare 10 sawaalon ke jawab do.", seeType: "Mera type dekho",
+  personalPrefix: "Tumhare liye personalised: ", commonTitle: "Sabke liye common routine",
+  commonText: "Quiz do aur ye page tumhare body type ke hisaab se adjust ho jayega — agar tumhe thand lagti hai to warming tips, agar garmi lagti hai to cooling tips, aur agar tum steady ho to zyada movement.",
+  note50: "50+ focus: haddiyon aur joints par extra dhyaan do, aur regular checkups jaari rakho.",
+  noteU18: "18 se kam: parent ki guidance mein follow karo, aur jadi-bootiyan sirf tab jab expert kahe.",
+  everydayTitle: "Har roz ke liye", everydayNote: "Ye har roz hote hain, isliye ye neeche wale weeks mein repeat nahi hote.",
+  thisWeek: "Is hafte (date ke hisaab se: mahine ka week {n}). Aaj highlight hai.",
+  rest: "Rest — koi khaas task nahi",
+  asNeededTitle: "Zaroorat par — scheduled nahi", asNeededNote: "Ye sirf tab lagu hote hain jab situation aaye, isliye inko koi fake day nahi diya gaya hai:",
+  resetTicks: "Saare ticks reset karo", usedFor: "— use: ",
+  selfFemale: "Breast self-check", selfMale: "Prostate checkup agar due ho", selfOther: "Monthly self-check — breast self-check (mahilaon ke liye) / prostate checkup agar due ho (purushon ke liye)"
+};
+var LANG = "en";
+try { var _L = localStorage.getItem("ayurLang"); if (_L === "hi" || _L === "en") LANG = _L; } catch (e) {}
+function ORG() { return LANG === "hi" ? ORGANS_HI : ORGANS; }
+function TYPES_CUR() { return LANG === "hi" ? TYPES_HI : TYPES; }
+function QUIZ_CUR() { return LANG === "hi" ? QUIZ_Q_HI : QUIZ_Q; }
+function EVERYDAY_CUR() { return LANG === "hi" ? EVERYDAY_HI : EVERYDAY; }
+function WEEKS_CUR() { return LANG === "hi" ? WEEKS_HI : WEEKS; }
+function AS_NEEDED_CUR() { return LANG === "hi" ? AS_NEEDED_HI : AS_NEEDED; }
+function BUY_CUR() { return LANG === "hi" ? BUY_HI : BUY; }
+function UI() { return LANG === "hi" ? UI_HI : UI_EN; }
+
+
 var grid = document.getElementById("grid");
 var sectionsEl = document.getElementById("sections");
 var emptyEl = document.getElementById("empty");
@@ -402,7 +809,10 @@ function blockHTML(cls, title, items) {
     items.map(function (t) { return "<li>" + t + "</li>"; }).join("") + "</ul></div>";
 }
 
-ORGANS.forEach(function (o) {
+function renderOrgans() {
+  grid.innerHTML = "";
+  sectionsEl.innerHTML = "";
+  ORG().forEach(function (o) {
   var card = document.createElement("button");
   card.type = "button";
   card.className = "card";
@@ -420,16 +830,17 @@ ORGANS.forEach(function (o) {
   sec.setAttribute("data-id", o.id);
   sec.setAttribute("data-name", (o.name + " " + o.tip).toLowerCase());
   sec.innerHTML = "<h2>" + o.emoji + " " + o.name + "</h2>" +
-    blockHTML("do", "✅ Do this", o.do) +
-    blockHTML("eat", "🥗 Eat this", o.eat) +
-    blockHTML("avoid", "🚫 Avoid this", o.avoid) +
-    blockHTML("watch", "⚠️ Watch out for", o.watch) +
-    '<a class="back" href="#top">↑ Back to all organs</a>';
+    blockHTML("do", UI().do, o.do) +
+    blockHTML("eat", UI().eat, o.eat) +
+    blockHTML("avoid", UI().avoid, o.avoid) +
+    blockHTML("watch", UI().watch, o.watch) +
+    '<a class="back" href="#top">' + UI().back + '</a>';
   sectionsEl.appendChild(sec);
-});
+  });
+}
 
-document.getElementById("search").addEventListener("input", function (e) {
-  var q = e.target.value.trim().toLowerCase();
+function applySearch() {
+  var q = document.getElementById("search").value.trim().toLowerCase();
   var shown = 0;
   document.querySelectorAll("[data-id]").forEach(function (el) {
     var match = !q || el.getAttribute("data-name").indexOf(q) !== -1;
@@ -437,7 +848,8 @@ document.getElementById("search").addEventListener("input", function (e) {
     if (match && el.classList.contains("card")) shown++;
   });
   emptyEl.style.display = shown === 0 ? "block" : "none";
-});
+}
+document.getElementById("search").addEventListener("input", applySearch);
 
 /* ---------- Tabs ---------- */
 var tabBtns = document.querySelectorAll(".tabbtn");
@@ -479,33 +891,35 @@ function renderQuiz() {
   var box = document.getElementById("quiz-box");
   var saved = getQuiz();
   if (saved) {
-    var t = TYPES[saved.type];
-    var html = '<div class="result"><h3>Your type: ' + t.sk + ' — ' + t.plain + '</h3><p>' + t.desc + '</p><ul>' +
+    var t = TYPES_CUR()[saved.type];
+    var html = '<div class="result"><h3>' + UI().yourType + t.sk + ' — ' + t.plain + '</h3><p>' + t.desc + '</p><ul>' +
       t.tweaks.map(function (x) { return "<li>" + x + "</li>"; }).join("") + "</ul>" +
-      "<p style='margin-top:10px;font-size:14px;color:#5c6653'>Your Routine tab is now personalised for this type." +
-      (saved.age ? " Age band: " + saved.age + "." : "") +
-      (saved.gender && saved.gender !== "Prefer not to say" ? " Gender: " + saved.gender + "." : "") + "</p></div>" +
-      '<button type="button" class="btn secondary" id="retake">Retake the quiz</button>';
+      "<p style='margin-top:10px;font-size:14px;color:#5c6653'>" + UI().quizNote +
+      (saved.age ? " " + UI().ageBand + UI().ageLabels[saved.age] + "." : "") +
+      (saved.gender && saved.gender !== "Prefer not to say" ? " " + UI().genderLabel + UI().genderLabels[saved.gender] + "." : "") + "</p></div>" +
+      '<button type="button" class="btn secondary" id="retake">' + UI().retake + '</button>';
     box.innerHTML = html;
     document.getElementById("retake").addEventListener("click", function () {
       localStorage.removeItem("ayurQuiz"); renderQuiz();
     });
     return;
   }
-  var html = '<div class="field"><label>Age band: <select id="q-age"><option>Under 18</option><option selected>18–30</option><option>31–50</option><option>50+</option></select></label></div>' +
-    '<div class="field"><label>Gender: <select id="q-gender"><option>Female</option><option>Male</option><option selected>Prefer not to say</option></select></label></div>';
-  QUIZ_Q.forEach(function (item, i) {
+  var html = '<div class="field"><label>' + UI().ageField + ' <select id="q-age">' +
+    UI().ageVals.map(function (v, i) { return '<option value="' + v + '"' + (i === 1 ? " selected" : "") + ">" + UI().ageLabels[v] + "</option>"; }).join("") + "</select></label></div>" +
+    '<div class="field"><label>' + UI().genderField + ' <select id="q-gender">' +
+    UI().genderVals.map(function (v, i) { return '<option value="' + v + '"' + (i === 2 ? " selected" : "") + ">" + UI().genderLabels[v] + "</option>"; }).join("") + "</select></label></div>";
+  QUIZ_CUR().forEach(function (item, i) {
     html += '<div class="quiz-q"><p>' + (i + 1) + '. ' + item.q + '</p>' +
       item.opts.map(function (o) {
         return '<label><input type="radio" name="q' + i + '" value="' + o[1] + '"> ' + o[0] + '</label>';
       }).join("") + '</div>';
   });
-  html += '<p class="err" id="quiz-err">Please answer all 10 questions first.</p>' +
-    '<button type="button" class="btn" id="quiz-submit">See my type</button>';
+  html += '<p class="err" id="quiz-err">' + UI().quizErr + '</p>' +
+    '<button type="button" class="btn" id="quiz-submit">' + UI().seeType + '</button>';
   box.innerHTML = html;
   document.getElementById("quiz-submit").addEventListener("click", function () {
     var scores = { v: 0, p: 0, k: 0 };
-    for (var i = 0; i < QUIZ_Q.length; i++) {
+    for (var i = 0; i < QUIZ_CUR().length; i++) {
       var sel = document.querySelector('input[name="q' + i + '"]:checked');
       if (!sel) { document.getElementById("quiz-err").style.display = "block"; return; }
       scores[sel.value]++;
@@ -606,22 +1020,22 @@ function renderRoutine() {
   var gender = saved ? saved.gender : "Prefer not to say";
   var banner;
   if (saved) {
-    var t = TYPES[saved.type];
-    banner = '<div class="result"><h3>Personalised for you: ' + t.sk + ' (' + t.plain + ')</h3><ul>' +
+    var t = TYPES_CUR()[saved.type];
+    banner = '<div class="result"><h3>' + UI().personalPrefix + t.sk + ' (' + t.plain + ')</h3><ul>' +
       t.tweaks.map(function (x) { return "<li>" + x + "</li>"; }).join("") + "</ul>" +
-      (saved.age === "50+" ? "<p style='margin-top:8px'>50+ focus: give extra attention to bones & joints, and keep up regular checkups.</p>" : "") +
-      (saved.age === "Under 18" ? "<p style='margin-top:8px'>Under 18: follow this with a parent's guidance, and use herbs only if an expert advises.</p>" : "") +
+      (saved.age === "50+" ? "<p style='margin-top:8px'>" + UI().note50 + "</p>" : "") +
+      (saved.age === "Under 18" ? "<p style='margin-top:8px'>" + UI().noteU18 + "</p>" : "") +
       "</div>";
   } else {
-    banner = '<div class="result"><h3>Common routine for everyone</h3><p>Take the quiz and this page will adjust to your body type - warming tips if you run cold, cooling tips if you run hot, and more movement if you run steady.</p></div>';
+    banner = '<div class="result"><h3>' + UI().commonTitle + '</h3><p>' + UI().commonText + '</p></div>';
   }
   var checks = loadChecks("ayurRoutineChecks");
   var today = new Date();
   var thisWeek = Math.min(3, Math.floor((today.getDate() - 1) / 7));
   var todayDay = (today.getDay() + 6) % 7;
   var html = banner;
-  html += '<div class="week everyday"><h2 style="margin:0 0 4px">For everyday</h2><p class="focus">These happen every day, so they never repeat in the weeks below.</p>';
-  EVERYDAY.forEach(function (g, gi) {
+  html += '<div class="week everyday"><h2 style="margin:0 0 4px">' + UI().everydayTitle + '</h2><p class="focus">' + UI().everydayNote + '</p>';
+  EVERYDAY_CUR().forEach(function (g, gi) {
     html += "<h3>" + g.group + "</h3>";
     g.tasks.forEach(function (task, ti) {
       var key = "e" + gi + "-" + ti;
@@ -629,21 +1043,21 @@ function renderRoutine() {
     });
   });
   html += "</div>";
-  WEEKS.forEach(function (w, wi) {
+  WEEKS_CUR().forEach(function (w, wi) {
     html += '<div class="week"><h3>' + w.title + "</h3>";
-    if (wi === thisWeek) html += '<p class="focus">This week (by date: week ' + (wi + 1) + " of the month). Today is highlighted.</p>";
+    if (wi === thisWeek) html += '<p class="focus">' + UI().thisWeek.replace("{n}", wi + 1) + '</p>';
     w.days.forEach(function (d, di) {
       var isToday = (wi === thisWeek && di === todayDay);
       var key = "w" + wi + "d" + di;
       var task = d[1];
       var dur = d[2];
       if (task === "SELFCHECK") {
-        if (gender === "Female") { task = "Breast self-check"; dur = "5-10 min"; }
-        else if (gender === "Male") { task = "Prostate checkup if due"; dur = "30-60 min"; }
-        else { task = "Monthly self-check - breast self-check (women) / prostate checkup if due (men)"; dur = "5-10 min"; }
+        if (gender === "Female") { task = UI().selfFemale; dur = "5-10 min"; }
+        else if (gender === "Male") { task = UI().selfMale; dur = "30-60 min"; }
+        else { task = UI().selfOther; dur = "5-10 min"; }
       }
       if (!task) {
-        html += '<div class="dayrow' + (isToday ? " today" : "") + '"><span class="dayname">' + d[0] + '</span><span class="rest">Rest - no special task</span></div>';
+        html += '<div class="dayrow' + (isToday ? " today" : "") + '"><span class="dayname">' + d[0] + '</span><span class="rest">' + UI().rest + '</span></div>';
       } else {
         html += '<div class="dayrow' + (isToday ? " today" : "") + '"><span class="dayname">' + d[0] + "</span>" +
           checkRow(key, task, dur, !!checks[key]) + "</div>";
@@ -651,9 +1065,9 @@ function renderRoutine() {
     });
     html += "</div>";
   });
-  html += '<div class="asneeded"><h3>As needed - not scheduled</h3><p style="font-size:14px;color:#5a5228">These only apply when the situation comes up, so they are not given a fake day:</p><ul>' +
-    AS_NEEDED.map(function (x) { return "<li>" + x + "</li>"; }).join("") + "</ul></div>";
-  html += '<button type="button" class="btn secondary" id="routine-reset">Reset all ticks</button>';
+  html += '<div class="asneeded"><h3>' + UI().asNeededTitle + '</h3><p style="font-size:14px;color:#5a5228">' + UI().asNeededNote + '</p><ul>' +
+    AS_NEEDED_CUR().map(function (x) { return "<li>" + x + "</li>"; }).join("") + "</ul></div>";
+  html += '<button type="button" class="btn secondary" id="routine-reset">' + UI().resetTicks + '</button>';
   box.innerHTML = html;
   box.querySelectorAll("input[data-rkey]").forEach(function (cb) {
     cb.addEventListener("change", function () {
@@ -710,12 +1124,12 @@ function renderBuy() {
   var box = document.getElementById("buy-box");
   var checks = loadChecks("ayurBuyChecks");
   var html = "";
-  BUY.forEach(function (g, gi) {
+  BUY_CUR().forEach(function (g, gi) {
     html += '<div class="buygroup"><h3>' + g.group + '</h3><ul>';
     g.items.forEach(function (item, ii) {
       var key = "g" + gi + "i" + ii;
       var done = !!checks[key];
-      html += '<li><label><input type="checkbox" data-bkey="' + key + '"' + (done ? " checked" : "") + "> <strong>" + item[0] + '</strong> <span class="for">— used for: ' + item[1] + "</span></label></li>";
+      html += '<li><label><input type="checkbox" data-bkey="' + key + '"' + (done ? " checked" : "") + "> <strong>" + item[0] + '</strong> <span class="for">' + UI().usedFor + item[1] + "</span></label></li>";
     });
     html += "</ul></div>";
   });
@@ -729,6 +1143,57 @@ function renderBuy() {
   });
 }
 
+function applyStaticLang() {
+  var u = UI();
+  document.title = u.pageTitle;
+  document.getElementById("tagline").textContent = u.tagline;
+  document.getElementById("notice").innerHTML = u.notice;
+  document.getElementById("basics-title").textContent = u.basicsTitle;
+  document.getElementById("basics-list").innerHTML = u.basics.map(function (b) { return "<li><strong>" + b[0] + "</strong>" + b[1] + "</li>"; }).join("");
+  document.querySelectorAll(".tabbtn").forEach(function (b) {
+    var tab = b.getAttribute("data-tab");
+    b.textContent = tab === "panel-organs" ? u.tabs.organs : tab === "panel-quiz" ? u.tabs.quiz : tab === "panel-routine" ? u.tabs.routine : u.tabs.buy;
+  });
+  document.getElementById("quiz-title").textContent = u.quizTitle;
+  document.getElementById("quiz-sub").textContent = u.quizSub;
+  document.getElementById("routine-title").textContent = u.routineTitle;
+  document.getElementById("routine-sub").textContent = u.routineSub;
+  document.getElementById("buy-title").textContent = u.buyTitle;
+  document.getElementById("buy-sub").textContent = u.buySub;
+  document.getElementById("search").placeholder = u.searchPh;
+  document.getElementById("empty").textContent = u.emptyText;
+  document.getElementById("footer-text").innerHTML = u.footer;
+  document.getElementById("langBtn").textContent = LANG === "hi" ? "🌐 English" : "🌐 Hinglish";
+  document.documentElement.lang = LANG === "hi" ? "hi-Latn" : "en";
+}
+function setLang(next) {
+  var quizSel = [];
+  document.querySelectorAll('#quiz-box input[type="radio"]:checked').forEach(function (r) { quizSel.push(r.value); });
+  var ageEl = document.getElementById("q-age");
+  var genderEl = document.getElementById("q-gender");
+  var ageVal = ageEl ? ageEl.value : null;
+  var genderVal = genderEl ? genderEl.value : null;
+  LANG = next;
+  try { localStorage.setItem("ayurLang", LANG); } catch (e) {}
+  applyStaticLang();
+  renderOrgans();
+  applySearch();
+  renderQuiz();
+  quizSel.forEach(function (v, i) {
+    var r = document.querySelector('#quiz-box input[name="q' + i + '"][value="' + v + '"]');
+    if (r) r.checked = true;
+  });
+  if (ageVal && document.getElementById("q-age")) document.getElementById("q-age").value = ageVal;
+  if (genderVal && document.getElementById("q-gender")) document.getElementById("q-gender").value = genderVal;
+  renderRoutine();
+  renderBuy();
+}
+document.getElementById("langBtn").addEventListener("click", function () {
+  setLang(LANG === "hi" ? "en" : "hi");
+});
+applyStaticLang();
+renderOrgans();
+applySearch();
 renderQuiz();
 renderBuy();
 </script>
